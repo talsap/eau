@@ -10,16 +10,24 @@ class Tela(wx.Frame):
 
 #----------------------------------------------------------------------
      def __init__(self, *args, **kwargs):
-          wx.Frame.__init__(self, None, -1, 'EAU - Beta', size=(650,500), *args, **kwargs)
+          super(Tela, self).__init__(style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION, *args, **kwargs)
 
-          self.panel = wx.Panel(self, wx.ID_ANY)
           self.basic_gui()
+          
+     def basic_gui(self):
+          panel = wx.Panel(self)
+
+          self.SetSize((650,500))
           self.Centre()
+          self.Show()
+          
+          '''StatusBar'''
+          self.CreateStatusBar()
+          self.SetStatusText('Ensaio de Andesamento Unidimensional')
 
           '''MenuBarra'''
           arquivoMenu = wx.Menu()
           ajudaMenu = wx.Menu()
-
           menuBar = wx.MenuBar()
           menuBar.Append(arquivoMenu, '&Arquivo')
           menuBar.Append(ajudaMenu, '&Ajuda')
@@ -34,7 +42,7 @@ class Tela(wx.Frame):
           self.SetMenuBar(menuBar)
 
           '''Botao Novo Ensaio'''
-          self.button = wx.Button(self.panel, -1, 'Novo Ensaio')
+          self.button = wx.Button(panel, -1, 'Novo Ensaio')
           self.button.Centre()
           self.Bind(wx.EVT_BUTTON, self.NovoEnsaio, self.button)
           
@@ -42,11 +50,23 @@ class Tela(wx.Frame):
 #----------------------------------------------------------------------
      def NovoEnsaio(self, event):
           '''Tela Novo ensaio'''
-          win = wx.Frame(self, -1, 'EAU - Novo Ensaio', size=(450,300))
+          win = wx.Frame(self, -1, 'EAU - Novo Ensaio', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
+
+          panel = wx.Panel(win)
+          win.SetSize((500,600))
           win.Centre()
           win.Show(True)
 
+          '''StatusBar'''
+          win.CreateStatusBar()
+          win.SetStatusText('Novo Ensaio')
           
+          FontTitle =wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
+          FontCorpo =wx.Font(9 , wx.SWISS, wx.NORMAL, wx.NORMAL)
+          title = wx.StaticText(panel, -1, 'Dados do Ensaio', (10,10), (480,-1), wx.ALIGN_CENTER)
+          title.SetFont(FontTitle)
+
+          texto01 = wx.StaticText(panel, -1, 'CELULA DE ADENSAMENTO:',(10,40), (480,-1), wx.LIGHT)
 
 
 #----------------------------------------------------------------------
@@ -60,12 +80,6 @@ class Tela(wx.Frame):
           dlg.Destroy()
           
 #----------------------------------------------------------------------
-     def basic_gui(self):
-          '''StatusBar'''
-          self.CreateStatusBar()
-          self.SetStatusText('Ensaio de Andesamento Unidimensional')
-
-#----------------------------------------------------------------------
      def onExit(self, event):
           '''Opcao Sair'''
           self.Close(True)
@@ -74,10 +88,12 @@ class Tela(wx.Frame):
 
 '''Inicializacao do programa'''
 
-app = wx.App()
-frame = Tela()
-frame.Show()
-app.MainLoop()
+def main():
+     app = wx.App()
+     Tela(None)
+     app.MainLoop()
+
+main()
 
 
 
