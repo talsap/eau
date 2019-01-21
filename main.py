@@ -56,7 +56,7 @@ class Tela(wx.Frame):
      def ajudaGUI(self, event):
           '''Dialogo ajuda'''
           message1 = ('Software EAU - Ensaio de Adensamento Unidimensional\n\n')
-          message2 = ('Esse software foi desenvolvido para facilitar o mÃ©todo de ensaio da antiga MB-3336, hoje conhecida pela NBR 12007 - SOLO - ENSAIO DE ADENSAMENTO UNIDIMENSIONAL pela ABNT - AssociaÃ§Ã£o Brasileira de Normas TÃ©cnicas. Esta norma prescreve o mÃ©todo de determinaÃ§Ã£o das propriedades de adensamento do solo, caracterizadas pela velocidade e magnitude das deformaÃ§Ãµes, quando o solo Ã© lateralmente confinado e carregado de forma axial.')
+          message2 = ('Esse software foi desenvolvido para facilitar o método de ensaio da antiga MB-3336, hoje conhecida pela NBR 12007 - SOLO - ENSAIO DE ADENSAMENTO UNIDIMENSIONAL pela ABNT - Associacão Brasileira de Normas Técnicas. Esta norma prescreve o método de determinação das propriedades de adensamento do solo, caracterizadas pela velocidade e magnitude das deformacões, quando o solo é lateralmente confinado e carregado de forma axial.')
           dlg = wx.MessageDialog(self, message1 + message2, 'EAU', wx.OK|wx.ICON_INFORMATION)
           aboutPanel = wx.TextCtrl(dlg, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
           dlg.ShowModal()
