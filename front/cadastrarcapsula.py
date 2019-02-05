@@ -3,7 +3,8 @@
 '''Bibliotecas'''
 
 import wx
-import json
+import bancodedados
+import novoensaio
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -43,8 +44,7 @@ class cadCapsula(wx.Dialog):
                 menssagError.Destroy()
                 b = -1
 
-            capsula = open('capsulas.json', 'r')
-            self.capCadastradas = json.load(capsula)
+            self.capCadastradas = bancodedados.ler_cap()
 
             if a!= '' and  b!= '' and b>0:
                 if a in self.capCadastradas:
@@ -54,12 +54,8 @@ class cadCapsula(wx.Dialog):
                     menssagError.ShowModal()
                     menssagError.Destroy()
                 else:
-                    capsula.close()
-                    capsula = open('capsulas.json', 'w')
-                    self.capCadastradas.append(a)
-                    self.capCadastradas.append(b)
-                    json.dump(self.capCadastradas, capsula)
-                    capsula.close()
+                    bancodedados.data_entry_cap(a,b)
+                    novoensaio.TelaNovoEnsaio().Refresh()
                     self.Close(True)
 
             else:

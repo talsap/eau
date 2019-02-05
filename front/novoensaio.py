@@ -5,7 +5,7 @@
 import wx
 from cadastrarcapsula import cadCapsula
 from coleta import Coleta
-import json
+import bancodedados
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -28,19 +28,8 @@ class TelaNovoEnsaio(wx.Dialog):
             title = wx.StaticText(self.panel, -1, 'Dados do Ensaio', (20,20), (460,-1), wx.ALIGN_CENTER)
             title.SetFont(FontTitle)
 
-            '''Criar arquivo capsulas no acesso inicial'''
-            try:
-                capsula = open('capsulas.json', 'r')
-            except:
-                capsula = open('capsulas.json', 'w')
-                self.capCadastradas = [' ']
-                json.dump(self.capCadastradas, capsula)
-                capsula.close()
-
-            capsula = open('capsulas.json', 'r')
-            self.capCadastradas = json.load(capsula)
-            self.capCadastradas = [str(x) for x in self.capCadastradas]
-            print(self.capCadastradas)
+            '''Conecção com o banco, lendo capsula'''
+            self.capCadastradas = bancodedados.ler_cap()
 
             self.FontTitle =wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
             self.title = wx.StaticText(self.panel, -1, 'Dados do Ensaio', (20,20), (460,-1), wx.ALIGN_CENTER)
@@ -69,11 +58,11 @@ class TelaNovoEnsaio(wx.Dialog):
             self.CadastrarCapsulaButton = wx.Button(self.panel, -1, 'Cadastrar Cápsula', pos = (20, 350))
             self.Bind(wx.EVT_BUTTON, self.CadastrarCapsula, self.CadastrarCapsulaButton)
             self.text12 = wx.StaticText(self.panel, -1, '1', (272,373), (5,-1), wx.ALIGN_LEFT)
-            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,390), (70, -1), self.capCadastradas[1::2])
+            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,390), (70, -1), self.capCadastradas)
             self.text13 = wx.StaticText(self.panel, -1, '2', (352,373), (5,-1), wx.ALIGN_LEFT)
-            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,390), (70, -1), self.capCadastradas[1::2])
+            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,390), (70, -1), self.capCadastradas)
             self.text14 = wx.StaticText(self.panel, -1, '3', (432,373), (5,-1), wx.ALIGN_LEFT)
-            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,390), (70, -1), self.capCadastradas[1::2])
+            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,390), (70, -1), self.capCadastradas)
             self.text15 = wx.StaticText(self.panel, -1, 'Cápsula', (191,395), (45,-1), wx.ALIGN_LEFT)
             self.massaUmida01 = wx.TextCtrl(self.panel, -1, '', (240,420), (70, -1), wx.TE_RIGHT)
             self.massaUmida02 = wx.TextCtrl(self.panel, -1, '', (320,420), (70, -1), wx.TE_RIGHT)
@@ -85,7 +74,6 @@ class TelaNovoEnsaio(wx.Dialog):
             self.text17 = wx.StaticText(self.panel, -1, 'Massa Seca (g)', (154,455), (85,-1), wx.ALIGN_LEFT)
             self.continuar = wx.Button(self.panel, -1, 'Continuar', (20, 500), (450,-1), wx.ALIGN_LEFT)
             self.Bind(wx.EVT_BUTTON, self.Prosseguir, self.continuar)
-            capsula.close()
 
 #---------------------------------------------------------------------------------------------------------------------------------
         def CadastrarCapsula(self, event):
@@ -120,9 +108,8 @@ class TelaNovoEnsaio(wx.Dialog):
             n = format(n).replace(',','.')
             o = self.massaSeca03.GetValue()
             o = format(o).replace(',','.')
-            capsula = open('capsulas.json', 'r')
-            self.capCadastradas = json.load(capsula)
-            self.capCadastradas = [str(x) for x in self.capCadastradas]
+            '''Conecção com o banco, lendo capsula'''
+            self.capCadastradas = bancodedados.ler_cap()
 
         #---------------------------------------------------------------
             if self.check.GetValue() == True:
@@ -133,11 +120,13 @@ class TelaNovoEnsaio(wx.Dialog):
                 try:
                     p = float(p)
                 except ValueError:
-                    print('O valor altura do corpo de prova nao e um numero esperdo')
+                    print('O valor altura do corpo de prova nao e um numero esperdo01')
                     menssagError = wx.MessageDialog(self, 'O valor altura do corpo de prova nao e um número esperdo', 'EAU', wx.OK|wx.ICON_INFORMATION)
                     aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                     menssagError.ShowModal()
                     menssagError.Destroy()
+                    b = -1
+
             else:
                 p = 1
         #---------------------------------------------------------------
@@ -154,33 +143,37 @@ class TelaNovoEnsaio(wx.Dialog):
                 n = float(n)
                 o = float(o)
             except ValueError:
-                print('Os valores digitados em algum dos campos nao esta da maneira esperada')
+                print('Os valores digitados em algum dos campos nao esta da maneira esperada02')
                 menssagError = wx.MessageDialog(self, 'Os valores digitados em algum dos campos não está da maneira esperada', 'EAU', wx.OK|wx.ICON_INFORMATION)
                 aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                 menssagError.ShowModal()
                 menssagError.Destroy()
+                b = -1
+
         #---------------------------------------------------------------
-            if  a == 'Anel fixo' or  a == 'Anel flutuante'   and b>0 and c>0 and d>0 and e>0 and f>0 and j>0 and k>0 and l>0 and m>0 and n>0 and o>0 and p>0:
-                if b!= '' and c!= '' and d!= '' and e!= '' and f!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= '' and m!= '' and n!= '' and o!= '' and p!= '':
-                    if g in self.capCadastradas and h in self.capCadastradas and i in self.capCadastradas:
-                        self.Close(True)
-                        con = Coleta()
-                        resultado = con.ShowModal()
-                        capsula.close()
+            if  a == 'Anel fixo' or  a == 'Anel flutuante':
+                if b>0 and c>0 and d>0 and e>0 and f>0 and j>0 and k>0 and l>0 and m>0 and n>0 and o>0 and p>0:
+                    if b!= '' and c!= '' and d!= '' and e!= '' and f!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= '' and m!= '' and n!= '' and o!= '' and p!= '':
+                        if g in self.capCadastradas and h in self.capCadastradas and i in self.capCadastradas:
+                            self.Close(True)
+                            con = Coleta()
+                            resultado = con.ShowModal()
+
+                        else:
+                            print('O nome de uma das capsulas ou nao esta cadastrada ou nao foi informada')
+                            menssagError = wx.MessageDialog(self, 'O nome de uma das cápsulas ou não está cadastrada ou não foi informado corretamente', 'EAU', wx.OK|wx.ICON_INFORMATION)
+                            aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+                            menssagError.ShowModal()
+                            menssagError.Destroy()
 
                     else:
-                        print('O nome de uma das cápsulas ou não está cadastrada ou não foi informada')
-                        menssagError = wx.MessageDialog(self, 'O nome de uma das cápsulas ou não está cadastrada ou não foi informado corretamente', 'EAU', wx.OK|wx.ICON_INFORMATION)
-                        aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
-                        menssagError.ShowModal()
-                        menssagError.Destroy()
+                        print('Algum dos campos esta vazio')
 
                 else:
-                    print('Algum dos campos está vazio')
-                    capsula.close()
+                    print('Algum dos campos esta digitado errado')
+
             else:
-                print('Veja se todos os dados foram preenchidos corretamente')
-                capsula.close()
+                print('Veja se voce prencheu o tipo de de anel')
 
 #---------------------------------------------------------------------------------------------------------------------------------
         def onCheck(self, event):
