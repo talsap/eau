@@ -21,7 +21,8 @@ class TelaNovoEnsaio(wx.Dialog):
             self.panel = wx.Panel(self)
             self.SetSize((500,600))
             self.Centre()
-            a = self.Show()
+            self.Show()
+            self.Refresh()
 
             FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
             FontCorpo = wx.Font(9 , wx.SWISS, wx.NORMAL, wx.NORMAL)
@@ -79,7 +80,15 @@ class TelaNovoEnsaio(wx.Dialog):
         def CadastrarCapsula(self, event):
             dialogo = cadCapsula()
             resultado = dialogo.ShowModal()
-
+            self.capCadastradas = bancodedados.ler_cap()
+            self.capsulaComboBox01.Destroy()
+            self.capsulaComboBox02.Destroy()
+            self.capsulaComboBox03.Destroy()
+            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,390), (70, -1), self.capCadastradas)
+            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,390), (70, -1), self.capCadastradas)
+            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,390), (70, -1), self.capCadastradas)
+            self.Refresh()
+            
 #---------------------------------------------------------------------------------------------------------------------------------
         def Prosseguir(self, event):
             a = self.tipoAnel.GetValue()

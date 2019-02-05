@@ -55,7 +55,6 @@ class cadCapsula(wx.Dialog):
                     menssagError.Destroy()
                 else:
                     bancodedados.data_entry_cap(a,b)
-                    novoensaio.TelaNovoEnsaio().Refresh()
                     self.Close(True)
 
             else:
