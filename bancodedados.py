@@ -10,7 +10,7 @@ c = connection.cursor()
 
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS capsulas (id integer, capsula text, massa real)')
-    c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id integer, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, at integer, alt_corpo_prova real, massa_espc real)')
+    c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id integer, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
 
 create_table()
@@ -22,14 +22,6 @@ sql03 = 'SELECT * FROM umidadeInicial'
 def ler_quant_ensaios():
     identificador = []
     for rows in c.execute(sql02):
-        identificador.append(rows[0])
-
-    return identificador
-
-'''Ver a quantidade de umidades que tem no banco para criar o proximo id'''
-def ler_quant_Umidade():
-    identificador = []
-    for rows in c.execute(sql03):
         identificador.append(rows[0])
 
     return identificador
@@ -49,17 +41,17 @@ def data_entry_cap(a, b):
     connection.commit()
 
 '''Adiciona os dados iniciais do ensaio no banco'''
-def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, at, alt_cprova, m_esp):
+def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp):
     datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S'))
     quantidade = ler_quant_ensaios()
     id = len(quantidade)
-    c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, at, alt_corpo_prova, massa_espc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, at, alt_cprova, m_esp))
+    c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, alt_corpo_prova, massa_espc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp))
     connection.commit()
 
 '''Adiciona os valores para calcular o teor de umidade inicial'''
 def data_entry_umidade(cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03):
-    quantidade = ler_quant_Umidade()
-    id = len(quantidade)
+    quantidade = ler_quant_ensaios()
+    id = len(quantidade) - 1
     c.execute("INSERT INTO umidadeInicial (id, cap01, cap02, cap03, massaSeca01, massaSeca02, massaSeca03, massaUmida01, massaUmida02, massaUmida03) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03))
     connection.commit()
 

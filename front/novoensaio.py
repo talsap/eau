@@ -122,7 +122,6 @@ class TelaNovoEnsaio(wx.Dialog):
 
         #---------------------------------------------------------------
             if self.check.GetValue() == True:
-                print('entrou')
                 p = self.alturaCorpoProva.GetValue()
                 p = format(p).replace(',','.')
 
@@ -137,7 +136,7 @@ class TelaNovoEnsaio(wx.Dialog):
                     b = -1
 
             else:
-                p = 1
+                p = c
         #---------------------------------------------------------------
             try:
                 b = float(b)
@@ -152,8 +151,6 @@ class TelaNovoEnsaio(wx.Dialog):
                 n = float(n)
                 o = float(o)
                 p = float(p)
-                at = self.check.GetValue()
-                at = int(at)
 
             except ValueError:
                 print('Os valores digitados em algum dos campos nao esta da maneira esperada02')
@@ -168,7 +165,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 if b>0 and c>0 and d>0 and e>0 and f>0 and j>0 and k>0 and l>0 and m>0 and n>0 and o>0 and p>0:
                     if b!= '' and c!= '' and d!= '' and e!= '' and f!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= '' and m!= '' and n!= '' and o!= '' and p!= '':
                         if g in self.capCadastradas and h in self.capCadastradas and i in self.capCadastradas:
-                            bancodedados.data_entry_dados(a, b, c, d, e, at, p, f)
+                            bancodedados.data_entry_dados(a, b, c, d, e, p, f)
                             bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                             self.Close(True)
                             con = Coleta()
