@@ -88,7 +88,7 @@ class TelaNovoEnsaio(wx.Dialog):
             self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,390), (70, -1), self.capCadastradas)
             self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,390), (70, -1), self.capCadastradas)
             self.Refresh()
-            
+
 #---------------------------------------------------------------------------------------------------------------------------------
         def Prosseguir(self, event):
             a = self.tipoAnel.GetValue()
@@ -151,6 +151,10 @@ class TelaNovoEnsaio(wx.Dialog):
                 m = float(m)
                 n = float(n)
                 o = float(o)
+                p = float(p)
+                at = self.check.GetValue()
+                at = int(at)
+
             except ValueError:
                 print('Os valores digitados em algum dos campos nao esta da maneira esperada02')
                 menssagError = wx.MessageDialog(self, 'Os valores digitados em algum dos campos não está da maneira esperada', 'EAU', wx.OK|wx.ICON_INFORMATION)
@@ -164,6 +168,8 @@ class TelaNovoEnsaio(wx.Dialog):
                 if b>0 and c>0 and d>0 and e>0 and f>0 and j>0 and k>0 and l>0 and m>0 and n>0 and o>0 and p>0:
                     if b!= '' and c!= '' and d!= '' and e!= '' and f!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= '' and m!= '' and n!= '' and o!= '' and p!= '':
                         if g in self.capCadastradas and h in self.capCadastradas and i in self.capCadastradas:
+                            bancodedados.data_entry_dados(a, b, c, d, e, at, p, f)
+                            bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                             self.Close(True)
                             con = Coleta()
                             resultado = con.ShowModal()

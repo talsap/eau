@@ -2,6 +2,8 @@
 #SQL
 
 import sqlite3
+import time
+import datetime
 
 connection = sqlite3.connect('banco.db')
 c = connection.cursor()
@@ -14,11 +16,20 @@ def create_table():
 create_table()
 sql01 = 'SELECT * FROM capsulas ORDER BY capsula ASC'
 sql02 = 'SELECT * FROM dadosIniciais'
+sql03 = 'SELECT * FROM umidadeInicial'
 
 '''Ver a quantidade de ensaios que tem no banco para criar o proximo id'''
 def ler_quant_ensaios():
     identificador = []
     for rows in c.execute(sql02):
+        identificador.append(rows[0])
+
+    return identificador
+
+'''Ver a quantidade de umidades que tem no banco para criar o proximo id'''
+def ler_quant_Umidade():
+    identificador = []
+    for rows in c.execute(sql03):
         identificador.append(rows[0])
 
     return identificador
@@ -38,7 +49,8 @@ def data_entry_cap(a, b):
     connection.commit()
 
 '''Adiciona os dados iniciais do ensaio no banco'''
-def data_entry_dados(datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, at, alt_cprova, m_esp):
+def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, at, alt_cprova, m_esp):
+    datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S'))
     quantidade = ler_quant_ensaios()
     id = len(quantidade)
     c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, at, alt_corpo_prova, massa_espc) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, at, alt_cprova, m_esp))
@@ -46,7 +58,7 @@ def data_entry_dados(datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, at, al
 
 '''Adiciona os valores para calcular o teor de umidade inicial'''
 def data_entry_umidade(cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03):
-    quantidade = ler_quant_ensaios()
+    quantidade = ler_quant_Umidade()
     id = len(quantidade)
     c.execute("INSERT INTO umidadeInicial (id, cap01, cap02, cap03, massaSeca01, massaSeca02, massaSeca03, massaUmida01, massaUmida02, massaUmida03) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03))
     connection.commit()
