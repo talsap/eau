@@ -22,12 +22,6 @@ class TelaNovoEnsaio(wx.Dialog):
             self.SetSize((500,600))
             self.Centre()
             self.Show()
-            self.Refresh()
-
-            FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
-            FontCorpo = wx.Font(9 , wx.SWISS, wx.NORMAL, wx.NORMAL)
-            title = wx.StaticText(self.panel, -1, 'Dados do Ensaio', (20,20), (460,-1), wx.ALIGN_CENTER)
-            title.SetFont(FontTitle)
 
             '''Conecção com o banco, lendo capsula'''
             self.capCadastradas = bancodedados.ler_cap()
@@ -128,7 +122,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 try:
                     p = float(p)
                 except ValueError:
-                    print('O valor altura do corpo de prova nao e um numero esperdo01')
+                    print('O valor altura do corpo de prova nao e um numero esperdo')
                     menssagError = wx.MessageDialog(self, 'O valor altura do corpo de prova nao e um número esperdo', 'EAU', wx.OK|wx.ICON_INFORMATION)
                     aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                     menssagError.ShowModal()
@@ -153,7 +147,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 p = float(p)
 
             except ValueError:
-                print('Os valores digitados em algum dos campos nao esta da maneira esperada02')
+                print('Os valores digitados em algum dos campos nao esta da maneira esperada')
                 menssagError = wx.MessageDialog(self, 'Os valores digitados em algum dos campos não está da maneira esperada', 'EAU', wx.OK|wx.ICON_INFORMATION)
                 aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                 menssagError.ShowModal()

@@ -12,11 +12,22 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS capsulas (id integer, capsula text, massa real)')
     c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id integer, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
+    c.execute('CREATE TABLE IF NOT EXISTS ColetaDados (id integer, id_Estagio integer, pressao_aplicada real)')
 
 create_table()
+
 sql01 = 'SELECT * FROM capsulas ORDER BY capsula ASC'
 sql02 = 'SELECT * FROM dadosIniciais'
-sql03 = 'SELECT * FROM umidadeInicial'
+sql03 = 'SELECT * FROM ColetaDados'
+
+'''Ver a quantidade de Estagios que tem no ensaio para criar o proximo id_Estagio'''
+def ler_quant_estagios():
+    identificador = []
+    for rows in c.execute(sql03):
+        identificador.append(rows[1])
+
+    id = len(identificador) + 1
+    return id
 
 '''Ver a quantidade de ensaios que tem no banco para criar o proximo id'''
 def ler_quant_ensaios():
@@ -33,6 +44,7 @@ def ler_cap():
         lista_capsulas.append(row[1])
 
     return lista_capsulas
+
 '''Cadastra uma capsula no banco'''
 def data_entry_cap(a, b):
     quantidade = ler_cap()
