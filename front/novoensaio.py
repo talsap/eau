@@ -33,41 +33,48 @@ class TelaNovoEnsaio(wx.Dialog):
             self.texto02 = wx.StaticText(self.panel, -1, 'Tipo de Anel',(240,60), (230,-1), wx.ALIGN_LEFT)
             self.tipoAnel = wx.ComboBox(self.panel, -1, 'Selecione um item da lista', (240,80), (230, -1), choices = ('Anel fixo', 'Anel flutuante'))
             self.texto03 = wx.StaticText(self.panel, -1, 'ANEL:',(20,110), (40,-1), wx.ALIGN_LEFT)
-            self.diamtroInterno = wx.TextCtrl(self.panel, -1, '', (170,130),(100,-1), wx.TE_RIGHT)
-            self.texto05 = wx.StaticText(self.panel, -1, 'Diâmetro Interno (mm)',(40,135), (125,-1), wx.ALIGN_LEFT)
-            self.alturaAnel = wx.TextCtrl(self.panel, -1, '', (370,130),(100,-1), wx.TE_RIGHT)
-            self.texto04 = wx.StaticText(self.panel, -1, 'Altura (mm)',(297,135), (70,-1), wx.ALIGN_LEFT)
-            self.massaAnel = wx.TextCtrl(self.panel, -1, '', (370,160),(100,-1), wx.TE_RIGHT)
-            self.texto06 = wx.StaticText(self.panel, -1, 'Massa do Anel (g)',(267,165), (95,-1), wx.ALIGN_LEFT)
-            self.massaConjunto = wx.TextCtrl(self.panel, -1, '', (370,190),(100,-1), wx.TE_RIGHT)
-            self.texto07 = wx.StaticText(self.panel, -1, 'Massa do conjunto corpo de prova e anel de adensamento (g)',(35,195), (330,-1), wx.ALIGN_LEFT)
-            self.texto08 = wx.StaticText(self.panel, -1, 'CORPO-DE-PROVA:',(20,230), (460,-1), wx.ALIGN_LEFT)
-            self.check = wx.CheckBox(self.panel, -1, 'Altura do corpo de prova diferente da do anel', (210,240),(260,-1), wx.ALIGN_RIGHT)
-            self.alturaCorpoProva = wx.TextCtrl(self.panel, -1, '', (370,260),(100,-1), style = wx.TE_READONLY | wx.TE_RIGHT)
-            self.text09 = wx.StaticText(self.panel, -1, 'Altura do corpo de prova (mm)', (197,265),(170,-1), wx.ALIGN_LEFT)
+            self.text04_1 = wx.StaticText(self.panel, -1, '1', (272,120), (5,-1), wx.ALIGN_LEFT)
+            self.text04_2 = wx.StaticText(self.panel, -1, '2', (352,120), (5,-1), wx.ALIGN_LEFT)
+            self.text04_3 = wx.StaticText(self.panel, -1, '3', (432,120), (5,-1), wx.ALIGN_LEFT)
+            self.diamtroInterno01 = wx.TextCtrl(self.panel, -1, '', (240,137),(70,-1), wx.TE_RIGHT)
+            self.diamtroInterno02 = wx.TextCtrl(self.panel, -1, '', (320,137),(70,-1), wx.TE_RIGHT)
+            self.diamtroInterno03 = wx.TextCtrl(self.panel, -1, '', (400,137),(70,-1), wx.TE_RIGHT)
+            self.texto05 = wx.StaticText(self.panel, -1, 'Diâmetro Interno (mm)',(111,142), (125,-1), wx.ALIGN_LEFT)
+            self.alturaAnel01 = wx.TextCtrl(self.panel, -1, '', (240,167),(70,-1), wx.TE_RIGHT)
+            self.alturaAnel02 = wx.TextCtrl(self.panel, -1, '', (320,167),(70,-1), wx.TE_RIGHT)
+            self.alturaAnel03 = wx.TextCtrl(self.panel, -1, '', (400,167),(70,-1), wx.TE_RIGHT)
+            self.texto04 = wx.StaticText(self.panel, -1, 'Altura (mm)',(168,172), (70,-1), wx.ALIGN_LEFT)
+            self.massaAnel = wx.TextCtrl(self.panel, -1, '', (400,197),(70,-1), wx.TE_RIGHT)
+            self.texto06 = wx.StaticText(self.panel, -1, 'Massa do Anel (g)',(299,202), (95,-1), wx.ALIGN_LEFT)
+            self.massaConjunto = wx.TextCtrl(self.panel, -1, '', (400,227),(70,-1), wx.TE_RIGHT)
+            self.texto07 = wx.StaticText(self.panel, -1, 'Massa do conjunto corpo de prova e anel de adensamento (g)',(67,231), (330,-1), wx.ALIGN_LEFT)
+            self.texto08 = wx.StaticText(self.panel, -1, 'CORPO-DE-PROVA:',(20,270), (460,-1), wx.ALIGN_LEFT)
+            self.check = wx.CheckBox(self.panel, -1, 'Altura do corpo de prova diferente da do anel', (210,280),(260,-1), wx.ALIGN_RIGHT)
+            self.alturaCorpoProva = wx.TextCtrl(self.panel, -1, '', (370,300),(100,-1), style = wx.TE_READONLY | wx.TE_RIGHT)
+            self.text09 = wx.StaticText(self.panel, -1, 'Altura do corpo de prova (mm)', (197,305),(170,-1), wx.ALIGN_LEFT)
             self.text09.SetForegroundColour((119,118,114))
             self.Bind(wx.EVT_CHECKBOX, self.onCheck, self.check)
-            self.text10 = wx.StaticText(self.panel, -1, 'Massa específica dos grãos de solo (g/cm³)', (135,295), (230,-1), wx.ALIGN_LEFT)
-            self.massaEspeciciaGraosSolo = wx.TextCtrl(self.panel, -1, '', (370,290),(100,-1), wx.TE_RIGHT)
-            self.text11 = wx.StaticText(self.panel, -1, 'TEOR DE UMIDADE INICIAL:', (20,330), (150,-1), wx.ALIGN_LEFT)
-            self.CadastrarCapsulaButton = wx.Button(self.panel, -1, 'Cadastrar Cápsula', pos = (20, 350))
+            self.text10 = wx.StaticText(self.panel, -1, 'Massa específica dos grãos de solo (g/cm³)', (135,335), (230,-1), wx.ALIGN_LEFT)
+            self.massaEspeciciaGraosSolo = wx.TextCtrl(self.panel, -1, '', (370,330),(100,-1), wx.TE_RIGHT)
+            self.text11 = wx.StaticText(self.panel, -1, 'TEOR DE UMIDADE INICIAL:', (20,370), (150,-1), wx.ALIGN_LEFT)
+            self.CadastrarCapsulaButton = wx.Button(self.panel, -1, 'Cadastrar Cápsula', pos = (20, 390))
             self.Bind(wx.EVT_BUTTON, self.CadastrarCapsula, self.CadastrarCapsulaButton)
-            self.text12 = wx.StaticText(self.panel, -1, '1', (272,373), (5,-1), wx.ALIGN_LEFT)
-            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,390), (70, -1), self.capCadastradas)
-            self.text13 = wx.StaticText(self.panel, -1, '2', (352,373), (5,-1), wx.ALIGN_LEFT)
-            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,390), (70, -1), self.capCadastradas)
-            self.text14 = wx.StaticText(self.panel, -1, '3', (432,373), (5,-1), wx.ALIGN_LEFT)
-            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,390), (70, -1), self.capCadastradas)
-            self.text15 = wx.StaticText(self.panel, -1, 'Cápsula', (191,395), (45,-1), wx.ALIGN_LEFT)
-            self.massaUmida01 = wx.TextCtrl(self.panel, -1, '', (240,420), (70, -1), wx.TE_RIGHT)
-            self.massaUmida02 = wx.TextCtrl(self.panel, -1, '', (320,420), (70, -1), wx.TE_RIGHT)
-            self.massaUmida03 = wx.TextCtrl(self.panel, -1, '', (400,420), (70, -1), wx.TE_RIGHT)
-            self.text16 = wx.StaticText(self.panel, -1, 'Massa Úmida (g)', (143,425), (95,-1), wx.ALIGN_LEFT)
-            self.massaSeca01 = wx.TextCtrl(self.panel, -1, '', (240,450), (70, -1), wx.TE_RIGHT)
-            self.massaSeca02 = wx.TextCtrl(self.panel, -1, '', (320,450), (70, -1), wx.TE_RIGHT)
-            self.massaSeca03 = wx.TextCtrl(self.panel, -1, '', (400,450), (70, -1), wx.TE_RIGHT)
-            self.text17 = wx.StaticText(self.panel, -1, 'Massa Seca (g)', (154,455), (85,-1), wx.ALIGN_LEFT)
-            self.continuar = wx.Button(self.panel, -1, 'Continuar', (20, 500), (450,-1), wx.ALIGN_LEFT)
+            self.text12 = wx.StaticText(self.panel, -1, '1', (272,403), (5,-1), wx.ALIGN_LEFT)
+            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,425), (70, -1), self.capCadastradas)
+            self.text13 = wx.StaticText(self.panel, -1, '2', (352,403), (5,-1), wx.ALIGN_LEFT)
+            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,425), (70, -1), self.capCadastradas)
+            self.text14 = wx.StaticText(self.panel, -1, '3', (432,403), (5,-1), wx.ALIGN_LEFT)
+            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,425), (70, -1), self.capCadastradas)
+            self.text15 = wx.StaticText(self.panel, -1, 'Cápsula', (191,430), (45,-1), wx.ALIGN_LEFT)
+            self.massaUmida01 = wx.TextCtrl(self.panel, -1, '', (240,455), (70, -1), wx.TE_RIGHT)
+            self.massaUmida02 = wx.TextCtrl(self.panel, -1, '', (320,455), (70, -1), wx.TE_RIGHT)
+            self.massaUmida03 = wx.TextCtrl(self.panel, -1, '', (400,455), (70, -1), wx.TE_RIGHT)
+            self.text16 = wx.StaticText(self.panel, -1, 'Massa Úmida (g)', (143,460), (95,-1), wx.ALIGN_LEFT)
+            self.massaSeca01 = wx.TextCtrl(self.panel, -1, '', (240,485), (70, -1), wx.TE_RIGHT)
+            self.massaSeca02 = wx.TextCtrl(self.panel, -1, '', (320,485), (70, -1), wx.TE_RIGHT)
+            self.massaSeca03 = wx.TextCtrl(self.panel, -1, '', (400,485), (70, -1), wx.TE_RIGHT)
+            self.text17 = wx.StaticText(self.panel, -1, 'Massa Seca (g)', (154,490), (85,-1), wx.ALIGN_LEFT)
+            self.continuar = wx.Button(self.panel, -1, 'Continuar', (20, 530), (450,-1), wx.ALIGN_LEFT)
             self.Bind(wx.EVT_BUTTON, self.Prosseguir, self.continuar)
 
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -78,18 +85,26 @@ class TelaNovoEnsaio(wx.Dialog):
             self.capsulaComboBox01.Destroy()
             self.capsulaComboBox02.Destroy()
             self.capsulaComboBox03.Destroy()
-            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,390), (70, -1), self.capCadastradas)
-            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,390), (70, -1), self.capCadastradas)
-            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,390), (70, -1), self.capCadastradas)
+            self.capsulaComboBox01 = wx.ComboBox(self.panel, -1, '', (240,425), (70, -1), self.capCadastradas)
+            self.capsulaComboBox02 = wx.ComboBox(self.panel, -1, '', (320,425), (70, -1), self.capCadastradas)
+            self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,425), (70, -1), self.capCadastradas)
             self.Refresh()
 
 #---------------------------------------------------------------------------------------------------------------------------------
         def Prosseguir(self, event):
             a = self.tipoAnel.GetValue()
-            b = self.diamtroInterno.GetValue()
-            b = format(b).replace(',','.')
-            c = self.alturaAnel.GetValue()
-            c = format(c).replace(',','.')
+            b1 = self.diamtroInterno01.GetValue()
+            b1 = format(b1).replace(',','.')
+            b2 = self.diamtroInterno02.GetValue()
+            b2 = format(b2).replace(',','.')
+            b3 = self.diamtroInterno03.GetValue()
+            b3 = format(b3).replace(',','.')
+            c1 = self.alturaAnel01.GetValue()
+            c1 = format(c1).replace(',','.')
+            c2 = self.alturaAnel02.GetValue()
+            c2 = format(c2).replace(',','.')
+            c3 = self.alturaAnel03.GetValue()
+            c3 = format(c3).replace(',','.')
             d = self.massaAnel.GetValue()
             d = format(d).replace(',','.')
             e = self.massaConjunto.GetValue()
@@ -122,19 +137,35 @@ class TelaNovoEnsaio(wx.Dialog):
                 try:
                     p = float(p)
                 except ValueError:
-                    print('O valor altura do corpo de prova nao e um numero esperdo')
-                    menssagError = wx.MessageDialog(self, 'O valor altura do corpo de prova nao e um número esperdo', 'EAU', wx.OK|wx.ICON_INFORMATION)
+                    print('O valor altura do corpo de prova ou altura do anel nao e um numero esperdo')
+                    menssagError = wx.MessageDialog(self, 'O valor altura do corpo de prova ou altura do anel nao e um número esperdo', 'EAU', wx.OK|wx.ICON_INFORMATION)
                     aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                     menssagError.ShowModal()
                     menssagError.Destroy()
                     b = -1
 
             else:
-                p = c
+                try:
+                    c1 = float(c1)
+                    c2 = float(c2)
+                    c3 = float(c3)
+                except ValueError:
+                    print('O valor altura do corpo de prova ou altura do anel nao e um numero esperdo')
+                    c1 = -1
+                    
+                if c1>0 and c2>0 and c3>0 and c1!= '' and c2!= '' and c3!= '':
+                    p = (c1+c2+c3)/3
+                else:
+                    p = -1
+
         #---------------------------------------------------------------
             try:
-                b = float(b)
-                c = float(c)
+                b1 = float(b1)
+                b2 = float(b2)
+                b3 = float(b3)
+                c1 = float(c1)
+                c2 = float(c2)
+                c3 = float(c3)
                 d = float(d)
                 e = float(e)
                 f = float(f)
@@ -152,13 +183,15 @@ class TelaNovoEnsaio(wx.Dialog):
                 aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                 menssagError.ShowModal()
                 menssagError.Destroy()
-                b = -1
+                b1 = -1
 
         #---------------------------------------------------------------
             if  a == 'Anel fixo' or  a == 'Anel flutuante':
-                if b>0 and c>0 and d>0 and e>0 and f>0 and j>0 and k>0 and l>0 and m>0 and n>0 and o>0 and p>0:
-                    if b!= '' and c!= '' and d!= '' and e!= '' and f!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= '' and m!= '' and n!= '' and o!= '' and p!= '':
+                if b1>0 and b2>0 and b3>0 and c1>0 and c2>0 and c3>0 and d>0 and e>0 and f>0 and j>0 and k>0 and l>0 and m>0 and n>0 and o>0 and p>0:
+                    if b1!= '' and b2!= '' and b3!= '' and c1!= '' and c2!= '' and c3!= '' and d!= '' and e!= '' and f!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= '' and m!= '' and n!= '' and o!= '' and p!= '':
                         if g in self.capCadastradas and h in self.capCadastradas and i in self.capCadastradas:
+                            b = (b1+b2+b3)/3
+                            c = (c1+c2+c3)/3
                             bancodedados.data_entry_dados(a, b, c, d, e, p, f)
                             bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                             self.Close(True)
@@ -187,13 +220,13 @@ class TelaNovoEnsaio(wx.Dialog):
             if  self.check.GetValue() == False:
 
                 self.alturaCorpoProva.Destroy()
-                self.alturaCorpoProva = wx.TextCtrl(self.panel, -1, '', (370,260),(100,-1), style = wx.TE_READONLY | wx.TE_RIGHT)
+                self.alturaCorpoProva = wx.TextCtrl(self.panel, -1, '', (370,300),(100,-1), style = wx.TE_READONLY | wx.TE_RIGHT)
                 self.text09.SetForegroundColour((119,118,114))
                 self.Refresh()
 
             else:
                 self.alturaCorpoProva.Destroy()
-                self.alturaCorpoProva = wx.TextCtrl(self.panel, -1, '', (370,260), (100,-1), wx.TE_RIGHT)
+                self.alturaCorpoProva = wx.TextCtrl(self.panel, -1, '', (370,300),(100,-1), wx.TE_RIGHT)
                 self.text09.SetForegroundColour((0,0,0))
                 self.Refresh()
 

@@ -4,7 +4,9 @@
 
 import wx
 import bancodedados
+import math
 
+pi = math.pi
 ##################################################################################################################################
 ##################################################################################################################################
 ##################################################################################################################################
@@ -42,8 +44,10 @@ class Coleta(wx.Dialog):
             a = format(a).replace(',','.')
 
             try:
+                d = bancodedados.diametro_anel()
                 a = float(a)
-                b = a*10
+                b = a*9.81*4/(pi*d*d)
+                b = format(round(b, 2))
                 c  = str(b)
                 self.pressaoAplicada.Destroy()
                 self.pressaoAplicada = wx.TextCtrl(self.panel, -1, c, (370,90),(100,-1), wx.TE_RIGHT)
@@ -59,8 +63,10 @@ class Coleta(wx.Dialog):
             a = format(a).replace(',','.')
 
             try:
+                d = bancodedados.diametro_anel()
                 a = float(a)
-                b = a/10
+                b = a*d*d*pi/(9.81*4)
+                b = format(round(b, 2))
                 c  = str(b)
                 self.massaAplicada.Destroy()
                 self.massaAplicada = wx.TextCtrl(self.panel, -1, c, (370,60),(100,-1), wx.TE_RIGHT)
