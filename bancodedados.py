@@ -12,10 +12,21 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS capsulas (id INTEGER PRIMARY KEY AUTOINCREMENT, capsula text, massa real)')
     c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
-    c.execute('CREATE TABLE IF NOT EXISTS ColetaDados (id integer, id_Estagio integer, pressao_aplicada real)')
+    c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real)')
+    c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, altura real)')
 
 create_table()
 
+def InserirDadosPressao(a, b):
+    id = ler_quant_ensaios()
+    id_Estagio = ler_quant_estagios()
+    c.execute("INSERT INTO pressaoAplicada (id, id_Estagio, pressao_aplicada) VALUES (?, ?, ?)", (id, a, b))
+
+def InserirDados(a, b):
+    id = ler_quant_ensaios()
+    id_Estagio = ler_quant_estagios() - 1
+    c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, altura) VALUES (?, ?, ?, ?)", (id, id_Estagio, a, b))
+    connection.commit()
 
 def diametro_anel():
     id = ler_quant_ensaios()
@@ -27,8 +38,9 @@ def diametro_anel():
 
 '''Ver a quantidade de Estagios que tem no ensaio para criar o proximo id_Estagio'''
 def ler_quant_estagios():
+    id = ler_quant_ensaios()
     identificador = []
-    for rows in c.execute('SELECT * FROM ColetaDados'):
+    for rows in c.execute('SELECT * FROM pressaoAplicada WHERE id = ?', (id,)):
         identificador.append(rows[1])
 
     id = len(identificador) + 1
@@ -38,7 +50,8 @@ def ler_quant_estagios():
 def ler_quant_ensaios():
     for rows in c.execute('SELECT * FROM dadosIniciais'):
         identificador  = rows[0]
-
+        print(identificador)
+        
     return identificador
 
 '''Ver as capsulas que já tem no banco'''
