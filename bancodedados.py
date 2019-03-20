@@ -13,16 +13,27 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
     c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real)')
-    c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, altura real)')
+    c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, raizdotempo real, altura real)')
 
 create_table()
+
+def juncaoLista():
+    a = dataVisualizacao()
+    b = numEstagio()
+    cont = 0
+    id = len(a) - 1
+    c = []
+    while cont <= id:
+        c.append(a[cont] + b[cont])
+        cont = cont +1
+    return c
 
 '''Captura as datas e cria uma lista para visualização'''
 def dataVisualizacao():
     list_datestamp = []
 
     for row in c.execute('SELECT * FROM dadosIniciais'):
-        list_datestamp.append(row[1])
+        list_datestamp.append([row[1]])
 
     return list_datestamp
 
@@ -37,13 +48,10 @@ def numEstagio():
             row = format(row).replace('(','')
             row = format(row).replace(')','')
             row = format(row).replace(',','')
-            list_numEstagios.append(row)            
+            list_numEstagios.append([row])
         id = id + 1
 
     return list_numEstagios
-
-
-
 
 '''Adiciona no banco os dados da pressão correspondete a cada Estágio'''
 def InserirDadosPressao(a, b):
@@ -55,7 +63,11 @@ def InserirDadosPressao(a, b):
 def InserirDados(a, b):
     id = ler_quant_ensaios()
     id_Estagio = ler_quant_estagios() - 1
-    c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, altura) VALUES (?, ?, ?, ?)", (id, id_Estagio, a, b))
+    if a == 0:
+        raizdotempo = 0
+    else:
+        raizdotempo = a**0.5
+    c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, raizdotempo, altura) VALUES (?, ?, ?, ?, ?)", (id, id_Estagio, a, raizdotempo, b))
     connection.commit()
 
 '''Seleciona o diametro correspondente no banco de dados'''
@@ -82,7 +94,11 @@ def ler_quant_ensaios():
     for rows in c.execute('SELECT * FROM dadosIniciais'):
         identificador  = rows[0]
 
-    return identificador
+    try:
+        return identificador
+    except UnboundLocalError:
+        return 0
+
 
 '''Ver as capsulas que já tem no banco'''
 def ler_cap():

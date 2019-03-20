@@ -54,7 +54,17 @@ class Tela(wx.Frame):
           '''Lista dos Ensaios'''
           self.list_ctrl = wx.ListCtrl(panel, size=(605,250), pos=(20,160), style=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
 
-          self.list_ctrl.InsertColumn(0, 'DATA DO ENSAIO', wx.LIST_FORMAT_LEFT, width=110)
+          self.list_ctrl.InsertColumn(0, 'DATA DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=120)
+          self.list_ctrl.InsertColumn(1, 'ESTÁGIOS', wx.LIST_FORMAT_CENTRE, width=90)
+
+          lista = bancodedados.juncaoLista()
+          index= 0
+
+          for row in lista:
+              self.list_ctrl.InsertStringItem(index, row[0])
+              self.list_ctrl.SetStringItem(index, 1, row[1])
+              index += 1
+
 
 
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -76,6 +86,7 @@ class Tela(wx.Frame):
      def onExit(self, event):
           '''Opcao Sair'''
           self.Close(True)
+
 
 ##################################################################################################################################
 ##################################################################################################################################

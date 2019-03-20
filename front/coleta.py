@@ -59,8 +59,8 @@ class Coleta(wx.Dialog):
                 cont = cont + 1
                 self.numEstagios = str(cont)
                 self.iniciar.Destroy()
-                self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(255, 350), (225,-1), wx.ALIGN_LEFT)
-                self.Fechar = wx.Button(self.panel, -1, 'Fechar',(20, 350), (225,-1), wx.ALIGN_LEFT)
+                self.iniciar = wx.Button(self.panel, -1, 'Continuar',(255, 350), (225,-1), wx.ALIGN_LEFT)
+                self.Fechar = wx.Button(self.panel, -1, 'Finalizar',(20, 350), (225,-1), wx.ALIGN_LEFT)
                 self.Bind(wx.EVT_BUTTON, self.Iniciar, self.iniciar)
                 self.Bind(wx.EVT_BUTTON, self.dlg, self.Fechar)
                 self.title.Destroy()
@@ -124,7 +124,7 @@ class Coleta(wx.Dialog):
 #----------------------------------------------------------------------
         def dlg(self, event):
             '''Diálogo se deseja realmente sair'''
-            dlg = wx.MessageDialog(None, 'Deseja mesmo fechar o ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
+            dlg = wx.MessageDialog(None, 'Deseja mesmo finalizar o ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
             result = dlg.ShowModal()
 
             if result == wx.ID_YES:
