@@ -17,17 +17,48 @@ def create_table():
 
 create_table()
 
+'''Captura as datas e cria uma lista para visualização'''
+def dataVisualizacao():
+    list_datestamp = []
+
+    for row in c.execute('SELECT * FROM dadosIniciais'):
+        list_datestamp.append(row[1])
+
+    return list_datestamp
+
+'''Captura a quantidade de estagio de cada ensaio e cria uma lista para visualização'''
+def numEstagio():
+    id = 1
+    a = ler_quant_ensaios()
+    list_numEstagios = []
+
+    while id <= a:
+        for row in c.execute('SELECT max(id_Estagio) FROM pressaoAplicada WHERE id = ?', (id,)):
+            row = format(row).replace('(','')
+            row = format(row).replace(')','')
+            row = format(row).replace(',','')
+            list_numEstagios.append(row)            
+        id = id + 1
+
+    return list_numEstagios
+
+
+
+
+'''Adiciona no banco os dados da pressão correspondete a cada Estágio'''
 def InserirDadosPressao(a, b):
     id = ler_quant_ensaios()
     id_Estagio = ler_quant_estagios()
     c.execute("INSERT INTO pressaoAplicada (id, id_Estagio, pressao_aplicada) VALUES (?, ?, ?)", (id, a, b))
 
+'''Adiciona no banco os dados de tempo e altura do corpo-de-prova'''
 def InserirDados(a, b):
     id = ler_quant_ensaios()
     id_Estagio = ler_quant_estagios() - 1
     c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, altura) VALUES (?, ?, ?, ?)", (id, id_Estagio, a, b))
     connection.commit()
 
+'''Seleciona o diametro correspondente no banco de dados'''
 def diametro_anel():
     id = ler_quant_ensaios()
     for rows in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
@@ -50,8 +81,7 @@ def ler_quant_estagios():
 def ler_quant_ensaios():
     for rows in c.execute('SELECT * FROM dadosIniciais'):
         identificador  = rows[0]
-        print(identificador)
-        
+
     return identificador
 
 '''Ver as capsulas que já tem no banco'''

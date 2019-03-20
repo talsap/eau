@@ -3,6 +3,7 @@
 '''Bibliotecas'''
 
 import wx
+import bancodedados
 from novoensaio import TelaNovoEnsaio
 
 ##################################################################################################################################
@@ -46,9 +47,15 @@ class Tela(wx.Frame):
           self.SetMenuBar(menuBar)
 
           '''Botao Novo Ensaio'''
-          self.button = wx.Button(panel, -1, 'Novo Ensaio')
-          self.button.Centre()
+          self.button = wx.Button(panel, -1, 'Novo Ensaio', (275, 60), (100,-1))
           self.Bind(wx.EVT_BUTTON, self.NovoEnsaio, self.button)
+
+
+          '''Lista dos Ensaios'''
+          self.list_ctrl = wx.ListCtrl(panel, size=(605,250), pos=(20,160), style=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
+
+          self.list_ctrl.InsertColumn(0, 'DATA DO ENSAIO', wx.LIST_FORMAT_LEFT, width=110)
+
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def NovoEnsaio(self, event):

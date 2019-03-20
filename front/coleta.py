@@ -36,11 +36,12 @@ class Coleta(wx.Dialog):
             self.Bind(wx.EVT_TEXT, self.textDinamic02, self.pressaoAplicada)
             self.texto01 = wx.StaticText(self.panel, -1, 'Pressão Aplicada (kPa)',(245,95), (119,-1), wx.ALIGN_LEFT)
             self.prompt = wx.TextCtrl(self.panel, -1, wx.EmptyString, (20, 130), wx.Size( 450,200), style = wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NO_VSCROLL)
-            self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(20, 350), (450,-1), wx.ALIGN_LEFT)
+            self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(137.5, 350), (225,-1), wx.ALIGN_LEFT)
             self.Bind(wx.EVT_BUTTON, self.Iniciar, self.iniciar)
 
             self.Refresh()
             self.Update()
+
 
 #----------------------------------------------------------------------
         def Iniciar(self, event):
@@ -57,6 +58,11 @@ class Coleta(wx.Dialog):
                 resultado = dialogo.ShowModal()
                 cont = cont + 1
                 self.numEstagios = str(cont)
+                self.iniciar.Destroy()
+                self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(255, 350), (225,-1), wx.ALIGN_LEFT)
+                self.Fechar = wx.Button(self.panel, -1, 'Fechar',(20, 350), (225,-1), wx.ALIGN_LEFT)
+                self.Bind(wx.EVT_BUTTON, self.Iniciar, self.iniciar)
+                self.Bind(wx.EVT_BUTTON, self.dlg, self.Fechar)
                 self.title.Destroy()
                 self.FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
                 self.title = wx.StaticText(self.panel, -1, 'Estágio ' + self.numEstagios, (20,20), (460,-1), wx.ALIGN_CENTER)
@@ -72,11 +78,10 @@ class Coleta(wx.Dialog):
                 self.Update()
             else:
                 print('O valor de pressao aplicada nao e adequado')
-                menssagError = wx.MessageDialog(self, 'O valor para pressão aplicada não é adequado', 'EAU', wx.OK|wx.ICON_INFORMATION)
+                menssagError = wx.MessageDialog(self, 'O valor para pressão aplicada não é adequado', 'EAU', wx.OK | wx.ICON_INFORMATION)
                 aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                 menssagError.ShowModal()
                 menssagError.Destroy()
-
 
 #----------------------------------------------------------------------
         def textDinamic01(self, event):
@@ -115,6 +120,23 @@ class Coleta(wx.Dialog):
                 self.Refresh()
             except ValueError:
                 pass
+
+#----------------------------------------------------------------------
+        def dlg(self, event):
+            '''Diálogo se deseja realmente sair'''
+            dlg = wx.MessageDialog(None, 'Deseja mesmo fechar o ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
+            result = dlg.ShowModal()
+
+            if result == wx.ID_YES:
+                self.Close(True)
+                '''self.Bind(wx.EVT_INIT_DIALOG, self.onExit, dlg)'''
+            else:
+                dlg.Destroy()
+
+#----------------------------------------------------------------------
+        def onExit(self, event):
+            '''Opcao Sair'''
+            self.Close(True)
 
 ##################################################################################################################################
 ##################################################################################################################################
