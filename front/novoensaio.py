@@ -152,7 +152,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 except ValueError:
                     print('O valor altura do corpo de prova ou altura do anel nao e um numero esperdo')
                     c1 = -1
-                    
+
                 if c1>0 and c2>0 and c3>0 and c1!= '' and c2!= '' and c3!= '':
                     p = (c1+c2+c3)/3
                 else:
@@ -197,7 +197,7 @@ class TelaNovoEnsaio(wx.Dialog):
                             self.Close(True)
                             con = Coleta()
                             resultado = con.ShowModal()
-
+                            
                         else:
                             print('O nome de uma das capsulas ou nao esta cadastrada ou nao foi informada')
                             menssagError = wx.MessageDialog(self, 'O nome de uma das cápsulas ou não está cadastrada ou não foi informado corretamente', 'EAU', wx.OK|wx.ICON_INFORMATION)

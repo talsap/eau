@@ -17,6 +17,17 @@ def create_table():
 
 create_table()
 
+def ListaVisualizacao():
+    a = ids()
+    b = juncaoLista()
+    cont = 0
+    id = len(a) - 1
+    c = []
+    while cont <= id:
+        c.append( a[cont] + b[cont])
+        cont = cont +1
+    return c
+
 def juncaoLista():
     a = dataVisualizacao()
     b = numEstagio()
@@ -24,9 +35,17 @@ def juncaoLista():
     id = len(a) - 1
     c = []
     while cont <= id:
-        c.append(a[cont] + b[cont])
+        c.append([a[cont] + b[cont]])
         cont = cont +1
     return c
+
+def ids():
+    lista_id = []
+
+    for row in c.execute('SELECT * FROM dadosIniciais'):
+        lista_id.append([row[0]])
+
+    return lista_id
 
 '''Captura as datas e cria uma lista para visualização'''
 def dataVisualizacao():

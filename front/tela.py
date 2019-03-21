@@ -4,6 +4,8 @@
 
 import wx
 import bancodedados
+import wx.lib.mixins.listctrl as listmix
+from wx.lib.agw import ultimatelistctrl as ULC
 from novoensaio import TelaNovoEnsaio
 
 ##################################################################################################################################
@@ -11,7 +13,7 @@ from novoensaio import TelaNovoEnsaio
 ##################################################################################################################################
 
 '''Tela Inicial'''
-class Tela(wx.Frame):
+class Tela(wx.Frame, listmix.ColumnSorterMixin):
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def __init__(self, *args, **kwargs):
@@ -37,9 +39,9 @@ class Tela(wx.Frame):
           menuBar.Append(arquivoMenu, '&Arquivo')
           menuBar.Append(ajudaMenu, '&Ajuda')
 
-          novoEnsaioMenuItem = arquivoMenu.Append(wx.NewId(),'Novo Ensaio', 'Novo Ensaio')
-          exitMenuItem = arquivoMenu.Append(wx.NewId(), 'Sair','Sair')
-          ajudaMenuItem = ajudaMenu.Append(wx.NewId(),'Ajuda','Ajuda')
+          novoEnsaioMenuItem = arquivoMenu.Append(wx.NewId(),'Novo Ensaio\tCtrl+N', 'Novo Ensaio')
+          exitMenuItem = arquivoMenu.Append(wx.NewId(), 'Sair\tCtrl+Q','Sair')
+          ajudaMenuItem = ajudaMenu.Append(wx.NewId(),'Ajuda\tCtrl+H','Ajuda')
 
           self.Bind(wx.EVT_MENU, self.NovoEnsaio, novoEnsaioMenuItem)
           self.Bind(wx.EVT_MENU, self.onExit, exitMenuItem)
@@ -52,26 +54,52 @@ class Tela(wx.Frame):
 
 
           '''Lista dos Ensaios'''
-          self.list_ctrl = wx.ListCtrl(panel, size=(605,250), pos=(20,160), style=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
+          '''self.list_ctrl = wx.ListCtrl(panel, size=(605,250), pos=(20,160), style=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)'''
+          self.list_ctrl = ULC.UltimateListCtrl(panel, size=(605,250), pos=(20,160), agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES )
 
           self.list_ctrl.InsertColumn(0, 'DATA DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=120)
-          self.list_ctrl.InsertColumn(1, 'ESTÁGIOS', wx.LIST_FORMAT_CENTRE, width=90)
+          self.list_ctrl.InsertColumn(1, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=90)
+          self.list_ctrl.InsertColumn(2, 'VISUALIZAR GRAFICOS', wx.LIST_FORMAT_CENTRE, width=140)
 
-          lista = bancodedados.juncaoLista()
+          lista = bancodedados.ListaVisualizacao()
           index= 0
 
-          for row in lista:
-              self.list_ctrl.InsertStringItem(index, row[0])
+          for key, row in lista:
+              pos = self.list_ctrl.InsertStringItem(index, row[0])
               self.list_ctrl.SetStringItem(index, 1, row[1])
+              button = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="Gráficos")
+              button.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
+              self.list_ctrl.SetItemWindow(pos, col=2, wnd=button, expand=False)
+              self.list_ctrl.SetItemData(index, key)
               index += 1
 
 
+          vBox = wx.BoxSizer(wx.VERTICAL)
+          vBox.Add ((- 1, 140))
+          vBox.Add(self.list_ctrl, 1, wx.ALL | wx.EXPAND, 20)
+          self.SetSizer(vBox)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def NovoEnsaio(self, event):
+         valor_Logico = bancodedados.ler_quant_ensaios() - 1
          dialogo = TelaNovoEnsaio()
          resultado = dialogo.ShowModal()
 
+         lista = bancodedados.ListaVisualizacao()
+         index = bancodedados.ler_quant_ensaios() - 1
+
+         if valor_Logico == index:
+             pass
+
+         else:
+             pos = self.list_ctrl.InsertStringItem(index, lista[index][1][0])
+             self.list_ctrl.SetStringItem(index, 1, lista[index][1][1])
+             self.list_ctrl.Update()
+             button = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="Gráficos")
+             button.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
+             self.list_ctrl.SetItemWindow(pos, col=2, wnd=button, expand=False)
+             self.list_ctrl.SetItemData(index, key)
+             valor_Logico = valor_Logico + 1
 #---------------------------------------------------------------------------------------------------------------------------------
      def ajudaGUI(self, event):
           '''Dialogo ajuda'''
@@ -86,7 +114,6 @@ class Tela(wx.Frame):
      def onExit(self, event):
           '''Opcao Sair'''
           self.Close(True)
-
 
 ##################################################################################################################################
 ##################################################################################################################################
