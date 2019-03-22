@@ -23,7 +23,7 @@ class AddDados(wx.Dialog):
 
 #----------------------------------------------------------------------
         def __init__(self, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU')
+            wx.Dialog.__init__(self, None, -1, 'EAU - Beta')
 
             self.panel = wx.Panel(self)
             self.SetSize((240,390))
@@ -54,8 +54,8 @@ class AddDados(wx.Dialog):
             index = 0
 
             for row in rows:
-                self.list_ctrl.InsertStringItem(index, row[0])
-                self.list_ctrl.SetStringItem(index, 1, row[1])
+                self.list_ctrl.InsertItem(index, row[0])
+                self.list_ctrl.SetItem(index, 1, row[1])
                 index += 1
 
             self.confirmar = wx.Button(self.panel, -1, 'Coletar',(70, 323), (100,-1), wx.ALIGN_LEFT)

@@ -4,7 +4,6 @@
 
 import wx
 import bancodedados
-import wx.lib.mixins.listctrl as listmix
 from wx.lib.agw import ultimatelistctrl as ULC
 from novoensaio import TelaNovoEnsaio
 
@@ -13,7 +12,7 @@ from novoensaio import TelaNovoEnsaio
 ##################################################################################################################################
 
 '''Tela Inicial'''
-class Tela(wx.Frame, listmix.ColumnSorterMixin):
+class Tela(wx.Frame):
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def __init__(self, *args, **kwargs):
@@ -49,7 +48,8 @@ class Tela(wx.Frame, listmix.ColumnSorterMixin):
           self.SetMenuBar(menuBar)
 
           '''Botao Novo Ensaio'''
-          self.button = wx.Button(panel, -1, 'Novo Ensaio', (275, 60), (100,-1))
+          self.button = wx.Button(panel, -1, '', (301, 60), (48,48))
+          self.button.SetBitmap(wx.Bitmap('icons\icons-adicionar-48px.png'))
           self.Bind(wx.EVT_BUTTON, self.NovoEnsaio, self.button)
 
 
@@ -57,9 +57,14 @@ class Tela(wx.Frame, listmix.ColumnSorterMixin):
           '''self.list_ctrl = wx.ListCtrl(panel, size=(605,250), pos=(20,160), style=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)'''
           self.list_ctrl = ULC.UltimateListCtrl(panel, size=(605,250), pos=(20,160), agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES )
 
-          self.list_ctrl.InsertColumn(0, 'DATA DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=120)
-          self.list_ctrl.InsertColumn(1, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=90)
-          self.list_ctrl.InsertColumn(2, 'VISUALIZAR GRAFICOS', wx.LIST_FORMAT_CENTRE, width=140)
+          self.list_ctrl.InsertColumn(0, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
+          self.list_ctrl.InsertColumn(1, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=125)
+          self.list_ctrl.InsertColumn(2, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=85)
+          self.list_ctrl.InsertColumn(3, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
+          self.list_ctrl.InsertColumn(4, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
+          self.list_ctrl.InsertColumn(5, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
+          self.list_ctrl.InsertColumn(6, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
+          self.list_ctrl.InsertColumn(7, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
 
           lista = bancodedados.ListaVisualizacao()
           index= 0
@@ -67,9 +72,22 @@ class Tela(wx.Frame, listmix.ColumnSorterMixin):
           for key, row in lista:
               pos = self.list_ctrl.InsertStringItem(index, row[0])
               self.list_ctrl.SetStringItem(index, 1, row[1])
-              button = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="Gráficos")
-              button.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
-              self.list_ctrl.SetItemWindow(pos, col=2, wnd=button, expand=False)
+              self.list_ctrl.SetStringItem(index, 2, row[2])
+              buttonEDT = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+              buttonGRF = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+              buttonPDF = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+              buttonCSV = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+              buttonDEL = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+              buttonEDT.SetBitmap(wx.Bitmap('icons\icons-editar-arquivo-24px.png'))
+              buttonGRF.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
+              buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
+              buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
+              buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
+              self.list_ctrl.SetItemWindow(pos, col=3, wnd=buttonEDT, expand=True)
+              self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonGRF, expand=True)
+              self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonPDF, expand=True)
+              self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonCSV, expand=True)
+              self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonDEL, expand=True)
               self.list_ctrl.SetItemData(index, key)
               index += 1
 
@@ -88,17 +106,34 @@ class Tela(wx.Frame, listmix.ColumnSorterMixin):
          lista = bancodedados.ListaVisualizacao()
          index = bancodedados.ler_quant_ensaios() - 1
 
+         '''For apenas para definir os key's'''
+         for key, row in lista:
+             pass
+
          if valor_Logico == index:
              pass
 
          else:
              pos = self.list_ctrl.InsertStringItem(index, lista[index][1][0])
              self.list_ctrl.SetStringItem(index, 1, lista[index][1][1])
-             self.list_ctrl.Update()
-             button = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="Gráficos")
-             button.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
-             self.list_ctrl.SetItemWindow(pos, col=2, wnd=button, expand=False)
+             self.list_ctrl.SetStringItem(index, 2, lista[index][1][2])
+             buttonEDT = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+             buttonGRF = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+             buttonPDF = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+             buttonCSV = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+             buttonDEL = wx.Button(self.list_ctrl, id = wx.ID_ANY, label="")
+             buttonEDT.SetBitmap(wx.Bitmap('icons\icons-editar-arquivo-24px.png'))
+             buttonGRF.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
+             buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
+             buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
+             buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
+             self.list_ctrl.SetItemWindow(pos, col=3, wnd=buttonEDT, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonGRF, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonPDF, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonCSV, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonDEL, expand=True)
              self.list_ctrl.SetItemData(index, key)
+             self.list_ctrl.Update()
              valor_Logico = valor_Logico + 1
 #---------------------------------------------------------------------------------------------------------------------------------
      def ajudaGUI(self, event):

@@ -17,7 +17,7 @@ class Coleta(wx.Dialog):
 
 #----------------------------------------------------------------------
         def __init__(self, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU')
+            wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION)
 
             self.panel = wx.Panel(self)
             self.SetSize((500,425))
@@ -128,8 +128,8 @@ class Coleta(wx.Dialog):
             result = dlg.ShowModal()
 
             if result == wx.ID_YES:
+                bancodedados.data_termino()
                 self.Close(True)
-                '''self.Bind(wx.EVT_INIT_DIALOG, self.onExit, dlg)'''
             else:
                 dlg.Destroy()
 

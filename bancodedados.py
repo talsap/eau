@@ -10,6 +10,7 @@ c = connection.cursor()
 
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS capsulas (id INTEGER PRIMARY KEY AUTOINCREMENT, capsula text, massa real)')
+    c.execute('CREATE TABLE IF NOT EXISTS datafinalDoEnsaio (id INTEGER PRIMARY KEY AUTOINCREMENT, datafinal text)')
     c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
     c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real)')
@@ -28,17 +29,21 @@ def ListaVisualizacao():
         cont = cont +1
     return c
 
+
 def juncaoLista():
-    a = dataVisualizacao()
-    b = numEstagio()
+    a = dataInicial()
+    b = datafinal()
+    c = numEstagio()
     cont = 0
     id = len(a) - 1
-    c = []
+    d = []
     while cont <= id:
-        c.append([a[cont] + b[cont]])
+        d.append([a[cont] + b[cont] + c[cont]])
         cont = cont +1
-    return c
 
+    return d
+
+'''Lista com os ids'''
 def ids():
     lista_id = []
 
@@ -47,14 +52,23 @@ def ids():
 
     return lista_id
 
-'''Captura as datas e cria uma lista para visualização'''
-def dataVisualizacao():
-    list_datestamp = []
+'''Captura as datas finais dos ensaios para criar uma lista para visualização'''
+def datafinal():
+    list_datefinal = []
+
+    for row in c.execute('SELECT * FROM datafinalDoEnsaio'):
+        list_datefinal.append([row[1]])
+
+    return list_datefinal
+
+'''Captura as datas iniciais dos ensaios para criar uma lista para visualização'''
+def dataInicial():
+    list_dateincial = []
 
     for row in c.execute('SELECT * FROM dadosIniciais'):
-        list_datestamp.append([row[1]])
+        list_dateincial.append([row[1]])
 
-    return list_datestamp
+    return list_dateincial
 
 '''Captura a quantidade de estagio de cada ensaio e cria uma lista para visualização'''
 def numEstagio():
@@ -118,7 +132,6 @@ def ler_quant_ensaios():
     except UnboundLocalError:
         return 0
 
-
 '''Ver as capsulas que já tem no banco'''
 def ler_cap():
     lista_capsulas = []
@@ -132,6 +145,12 @@ def data_entry_cap(a, b):
     c.execute("INSERT INTO capsulas (id, capsula, massa) VALUES (NULL, ?, ?)", (a, b))
     connection.commit()
 
+'''Data de quando o ensaio termina'''
+def data_termino():
+    date = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S'))
+    c.execute("INSERT INTO datafinalDoEnsaio (id, datafinal) VALUES (NULL, ?)", (date,))
+    connection.commit()
+    
 '''Adiciona os dados iniciais do ensaio no banco'''
 def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp):
     datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S'))
