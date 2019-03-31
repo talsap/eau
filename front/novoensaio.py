@@ -194,10 +194,11 @@ class TelaNovoEnsaio(wx.Dialog):
                             c = (c1+c2+c3)/3
                             bancodedados.data_entry_dados(a, b, c, d, e, p, f)
                             bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
+                            bancodedados.data_termino()
                             self.Close(True)
                             con = Coleta()
                             resultado = con.ShowModal()
-                            
+
                         else:
                             print('O nome de uma das capsulas ou nao esta cadastrada ou nao foi informada')
                             menssagError = wx.MessageDialog(self, 'O nome de uma das cápsulas ou não está cadastrada ou não foi informado corretamente', 'EAU', wx.OK|wx.ICON_INFORMATION)

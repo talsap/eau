@@ -54,9 +54,7 @@ class Tela(wx.Frame):
 
 
           '''Lista dos Ensaios'''
-          '''self.list_ctrl = wx.ListCtrl(panel, size=(605,250), pos=(20,160), style=wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)'''
           self.list_ctrl = ULC.UltimateListCtrl(panel, size=(605,250), pos=(20,160), agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES )
-
           self.list_ctrl.InsertColumn(0, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
           self.list_ctrl.InsertColumn(1, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=125)
           self.list_ctrl.InsertColumn(2, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=85)
@@ -67,7 +65,7 @@ class Tela(wx.Frame):
           self.list_ctrl.InsertColumn(7, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
 
           lista = bancodedados.ListaVisualizacao()
-          index= 0
+          index = 0
 
           for key, row in lista:
               pos = self.list_ctrl.InsertStringItem(index, row[0])
@@ -89,6 +87,7 @@ class Tela(wx.Frame):
               self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonCSV, expand=True)
               self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonDEL, expand=True)
               self.list_ctrl.SetItemData(index, key)
+              self.Bind(wx.EVT_LIST_COL_CLICK, self.Deletar, buttonDEL)
               index += 1
 
 
@@ -96,15 +95,20 @@ class Tela(wx.Frame):
           vBox.Add ((- 1, 140))
           vBox.Add(self.list_ctrl, 1, wx.ALL | wx.EXPAND, 20)
           self.SetSizer(vBox)
+#---------------------------------------------------------------------------------------------------------------------------------
+     def Deletar(self, event):
+         id = self.list_ctrl.GetIndex()
+         print(id)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def NovoEnsaio(self, event):
-         valor_Logico = bancodedados.ler_quant_ensaios() - 1
+         quant = bancodedados.quant_ensaios_deletados()
+         valor_Logico = bancodedados.ler_quant_ensaios() - 1 - quant
          dialogo = TelaNovoEnsaio()
          resultado = dialogo.ShowModal()
 
          lista = bancodedados.ListaVisualizacao()
-         index = bancodedados.ler_quant_ensaios() - 1
+         index = bancodedados.ler_quant_ensaios() - 1 - quant
 
          '''For apenas para definir os key's'''
          for key, row in lista:

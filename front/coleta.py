@@ -67,15 +67,25 @@ class Coleta(wx.Dialog):
                 self.FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
                 self.title = wx.StaticText(self.panel, -1, 'Estágio ' + self.numEstagios, (20,20), (460,-1), wx.ALIGN_CENTER)
                 self.title.SetFont(self.FontTitle)
+                massaSeguinte = self.massaAplicada.GetValue()
+                massaSeguinte = format(massaSeguinte).replace(',','.')
+                massaSeguinte = float(massaSeguinte)
+                massaSeguinte = massaSeguinte*2
+                massaSeguinte = str(massaSeguinte)
                 pressaoSeguinte = self.pressaoAplicada.GetValue()
                 pressaoSeguinte = format(pressaoSeguinte ).replace(',','.')
                 pressaoSeguinte = float(pressaoSeguinte)
                 pressaoSeguinte = pressaoSeguinte*2
                 pressaoSeguinte = str(pressaoSeguinte)
+                self.massaAplicada.Destroy()
                 self.pressaoAplicada.Destroy()
+                self.massaAplicada = wx.TextCtrl(self.panel, -1, massaSeguinte, (370,60),(100,-1), wx.TE_RIGHT)
+                self.Bind(wx.EVT_TEXT, self.textDinamic01, self.massaAplicada)
                 self.pressaoAplicada = wx.TextCtrl(self.panel, -1, pressaoSeguinte, (370,90),(100,-1), wx.TE_RIGHT)
-                self.Refresh()
-                self.Update()
+                self.Bind(wx.EVT_TEXT, self.textDinamic02, self.pressaoAplicada)
+                self.massaAplicada.Update()
+                self.pressaoAplicada.Update()
+
             else:
                 print('O valor de pressao aplicada nao e adequado')
                 menssagError = wx.MessageDialog(self, 'O valor para pressão aplicada não é adequado', 'EAU', wx.OK | wx.ICON_INFORMATION)
@@ -99,6 +109,7 @@ class Coleta(wx.Dialog):
                 self.pressaoAplicada = wx.TextCtrl(self.panel, -1, c, (370,90),(100,-1), wx.TE_RIGHT)
                 self.Bind(wx.EVT_TEXT, self.textDinamic02, self.pressaoAplicada)
                 self.Refresh()
+
             except ValueError:
                 pass
 
@@ -128,7 +139,7 @@ class Coleta(wx.Dialog):
             result = dlg.ShowModal()
 
             if result == wx.ID_YES:
-                bancodedados.data_termino()
+                bancodedados.data_termino_Update()
                 self.Close(True)
             else:
                 dlg.Destroy()
