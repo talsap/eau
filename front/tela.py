@@ -4,16 +4,15 @@
 
 import wx
 import bancodedados
-import wx.lib.mixins.listctrl as listmix
 from wx.lib.agw import ultimatelistctrl as ULC
-from novoensaio import TelaNovoEnsaio
+from novo import TelaNovo
 
 ##################################################################################################################################
 ##################################################################################################################################
 ##################################################################################################################################
 
 '''Tela Inicial'''
-class Tela(wx.Frame, listmix.ColumnSorterMixin):
+class Tela(wx.Frame):
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def __init__(self, *args, **kwargs):
@@ -104,7 +103,7 @@ class Tela(wx.Frame, listmix.ColumnSorterMixin):
      def NovoEnsaio(self, event):
          quant = bancodedados.quant_ensaios_deletados()
          valor_Logico = bancodedados.ler_quant_ensaios() - 1 - quant
-         dialogo = TelaNovoEnsaio()
+         dialogo = TelaNovo()
          resultado = dialogo.ShowModal()
 
          lista = bancodedados.ListaVisualizacao()

@@ -11,7 +11,7 @@ c = connection.cursor()
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS capsulas (id INTEGER PRIMARY KEY AUTOINCREMENT, capsula text, massa real)')
     c.execute('CREATE TABLE IF NOT EXISTS datafinalDoEnsaio (id INTEGER PRIMARY KEY AUTOINCREMENT, datafinal text)')
-    c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real)')
+    c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real, dateColeta text, local text, operador text, profundidade real)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
     c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real)')
     c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, raizdotempo real, altura real)')
@@ -178,7 +178,7 @@ def data_entry_cap(a, b):
 '''Data de quando o ensaio termina'''
 def data_termino_Update():
     id = ler_quant_ensaios()
-    date = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S'))
+    date = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M:%S  %d/%m/%Y'))
     c.execute("UPDATE datafinalDoEnsaio SET datafinal = ? WHERE id = ?", (date, id,))
     connection.commit()
 
@@ -189,9 +189,10 @@ def data_termino():
     connection.commit()
 
 '''Adiciona os dados iniciais do ensaio no banco'''
-def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp):
-    datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S'))
-    c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, alt_corpo_prova, massa_espc) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)", (datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp))
+def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade):
+    datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M:%S  %d/%m/%Y'))
+    dateColeta = str(datetime.datetime.strptime(str(dateColeta), '%m/%d/%y %H:%M:%S').strftime('%d-%m-%Y'))
+    c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, alt_corpo_prova, massa_espc, dateColeta, local, operador, profundidade) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade))
     connection.commit()
 
 '''Adiciona os valores para calcular o teor de umidade inicial'''

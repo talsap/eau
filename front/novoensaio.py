@@ -15,8 +15,13 @@ import bancodedados
 class TelaNovoEnsaio(wx.Dialog):
 
 #---------------------------------------------------------------------------------------------------------------------------------
-        def __init__(self, *args, **kwargs):
+        def __init__(self, date, local, operador, profundidade, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio')
+
+            self.date = date
+            self.local = local
+            self.operador = operador
+            self.profundidade  = profundidade
 
             self.panel = wx.Panel(self)
             self.SetSize((500,600))
@@ -126,6 +131,10 @@ class TelaNovoEnsaio(wx.Dialog):
             n = format(n).replace(',','.')
             o = self.massaSeca03.GetValue()
             o = format(o).replace(',','.')
+            q = self.date
+            r = self.local
+            s = self.operador
+            t = self.profundidade
             '''Conecção com o banco, lendo capsula'''
             self.capCadastradas = bancodedados.ler_cap()
 
@@ -192,7 +201,7 @@ class TelaNovoEnsaio(wx.Dialog):
                         if g in self.capCadastradas and h in self.capCadastradas and i in self.capCadastradas:
                             b = (b1+b2+b3)/3
                             c = (c1+c2+c3)/3
-                            bancodedados.data_entry_dados(a, b, c, d, e, p, f)
+                            bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t)
                             bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                             bancodedados.data_termino()
                             self.Close(True)
