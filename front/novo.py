@@ -27,7 +27,7 @@ class TelaNovo(wx.Dialog):
             self.title.SetFont(self.FontTitle)
             self.texto01 = wx.StaticText(self.panel, -1, 'DADOS DA COLETA:',(20,50), (460,-1), wx.ALIGN_LEFT)
             self.texto02 = wx.StaticText(self.panel, -1, 'Data da coleta', (250,73), (80,-1), wx.ALIGN_LEFT)
-            self.date = wx.adv.DatePickerCtrl(self.panel, id= wx.ID_ANY, dt=wx.DefaultDateTime, pos=(335,70), size=wx.DefaultSize, style=wx.adv.DP_DEFAULT|wx.adv.DP_SHOWCENTURY, validator=wx.DefaultValidator, name="datectrl")
+            self.date = wx.adv.DatePickerCtrl(self.panel, id= wx.ID_ANY, dt=wx.DefaultDateTime, pos=(335,70), size=wx.DefaultSize, style = wx.adv.DP_SHOWCENTURY | wx.adv.DP_DROPDOWN , validator=wx.DefaultValidator, name="datectrl")
             self.texto03 = wx.StaticText(self.panel, -1, 'Local',(85,105), (35,-1), wx.ALIGN_LEFT)
             self.localColeta = wx.TextCtrl(self.panel, -1, '', (120,100),(300,-1), wx.TE_RIGHT)
             self.localColeta.SetMaxLength(40)

@@ -4,6 +4,7 @@
 
 import wx
 from addados import AddDados
+from massaSeca import massaSeca
 import bancodedados
 import math
 
@@ -16,8 +17,11 @@ pi = math.pi
 class Coleta(wx.Dialog):
 
 #----------------------------------------------------------------------
-        def __init__(self, *args, **kwargs):
+        def __init__(self, y, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION)
+
+            '''y corresponde sobre o status do preenchimento da massa seca'''
+            self.y = y
 
             self.panel = wx.Panel(self)
             self.SetSize((500,425))
@@ -48,12 +52,18 @@ class Coleta(wx.Dialog):
             pressaoSeguinte = self.pressaoAplicada.GetValue()
             pressaoSeguinte = format(pressaoSeguinte ).replace(',','.')
 
+            try:
+                pressaoSeguinte = float(pressaoSeguinte)
+            except ValueError:
+                pressaoSeguinte = -1
+
+            '''y corresponde o status sobre o preenchimento da massa seca'''
+            y = int(self.y)
+
             if pressaoSeguinte != '' and pressaoSeguinte > 0:
-                pressao = self.pressaoAplicada.GetValue()
-                pressao = format(pressao).replace(',','.')
                 cont = self.numEstagios
                 cont = int(cont)
-                bancodedados.InserirDadosPressao(cont, pressao)
+                bancodedados.InserirDadosPressao(cont, pressaoSeguinte)
                 dialogo = AddDados()
                 resultado = dialogo.ShowModal()
                 cont = cont + 1
@@ -67,6 +77,11 @@ class Coleta(wx.Dialog):
                 self.FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
                 self.title = wx.StaticText(self.panel, -1, 'Estágio ' + self.numEstagios, (20,20), (460,-1), wx.ALIGN_CENTER)
                 self.title.SetFont(self.FontTitle)
+
+                if cont == 2 and y == 1:
+                    dialogo = massaSeca()
+                    resultado = dialogo.ShowModal()
+
                 massaSeguinte = self.massaAplicada.GetValue()
                 massaSeguinte = format(massaSeguinte).replace(',','.')
                 massaSeguinte = float(massaSeguinte)

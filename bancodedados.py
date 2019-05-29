@@ -19,6 +19,168 @@ def create_table():
 
 create_table()
 
+'''Atualiza todos os dados iniciais do ensaio no banco de dados'''
+def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massaEsp, dateCol, local, oper, prof, c1, c2, c3, ms1, ms2, ms3, mu1, mu2, mu3):
+    c.execute("UPDATE dadosIniciais SET tipoAnel = ? WHERE id = ?", (tipoA, id,))
+    c.execute("UPDATE dadosIniciais SET diametro_anel = ? WHERE id = ?", (diametro, id,))
+    c.execute("UPDATE dadosIniciais SET altura_anel = ? WHERE id = ?", (alturaA, id,))
+    c.execute("UPDATE dadosIniciais SET massa_anel = ? WHERE id = ?", (massaA, id,))
+    c.execute("UPDATE dadosIniciais SET massa_conj = ? WHERE id = ?", (massaC, id,))
+    c.execute("UPDATE dadosIniciais SET alt_corpo_prova = ? WHERE id = ?", (altCP, id,))
+    c.execute("UPDATE dadosIniciais SET massa_espc = ? WHERE id = ?", (massaEsp, id,))
+    c.execute("UPDATE dadosIniciais SET dateColeta = ? WHERE id = ?", (dateCol, id,))
+    c.execute("UPDATE dadosIniciais SET local = ? WHERE id = ?", (local, id,))
+    c.execute("UPDATE dadosIniciais SET operador = ? WHERE id = ?", (oper, id,))
+    c.execute("UPDATE dadosIniciais SET profundidade = ? WHERE id = ?", (prof, id,))
+    c.execute("UPDATE umidadeInicial SET cap01 = ? WHERE id = ?", (c1, id,))
+    c.execute("UPDATE umidadeInicial SET cap02 = ? WHERE id = ?", (c2, id,))
+    c.execute("UPDATE umidadeInicial SET cap03 = ? WHERE id = ?", (c3, id,))
+    c.execute("UPDATE umidadeInicial SET massaSeca01 = ? WHERE id = ?", (ms1, id,))
+    c.execute("UPDATE umidadeInicial SET massaSeca02 = ? WHERE id = ?", (ms2, id,))
+    c.execute("UPDATE umidadeInicial SET massaSeca03 = ? WHERE id = ?", (ms3, id,))
+    c.execute("UPDATE umidadeInicial SET massaUmida01 = ? WHERE id = ?", (mu1, id,))
+    c.execute("UPDATE umidadeInicial SET massaUmida02 = ? WHERE id = ?", (mu2, id,))
+    c.execute("UPDATE umidadeInicial SET massaUmida03 = ? WHERE id = ?", (mu3, id,))
+    connection.commit()
+
+'''Retorna com os Pressões aplicas em cada Estágio'''
+def Pressao(id, id_Estagio):
+    a = []
+    for row in c.execute('SELECT * FROM pressaoAplicada WHERE id = ? and id_Estagio = ?', (id, id_Estagio,)):
+        a.append(str(row[2]))
+
+    return a
+
+'''Retorna uma lista com os dados coletados que podem ser editados'''
+def TabelaEstagio(id, id_Estagio):
+    lista = []
+    tempos = []
+    alturas = []
+    cont = 0
+    for rows in c.execute('SELECT * FROM coletaDados WHERE id = ? and id_Estagio = ?', (id, id_Estagio,)):
+        tempos.append(str(rows[2]))
+        alturas.append(str(rows[4]))
+
+    id = len(tempos) - 1
+    while cont <= id:
+        lista.append([tempos[cont]] + [alturas[cont]])
+        cont = cont + 1
+
+    return lista
+
+'''Retorna uma Lista de Estágios para visualização e edição'''
+def ComboEstagios(id):
+    lista = []
+    i = 0
+    
+    for row in c.execute('SELECT max(id_Estagio) FROM pressaoAplicada WHERE id = ? ', (id, )):
+        row = format(row).replace('(','')
+        row = format(row).replace(')','')
+        row = format(row).replace(',','')
+        row = int(row)
+
+
+
+    while i < row:
+        lista.append('Estágio '+str(i+1))
+        i = i+1
+
+    return lista
+
+'''Atualiza os valores das massas secas no banco de dados'''
+def UpdateMassaSeca(id, m, n, o):
+    c.execute("UPDATE umidadeInicial SET massaSeca01 = ? WHERE id = ?", (m, id,))
+    c.execute("UPDATE umidadeInicial SET massaSeca02 = ? WHERE id = ?", (n, id,))
+    c.execute("UPDATE umidadeInicial SET massaSeca03 = ? WHERE id = ?", (o, id,))
+    connection.commit()
+
+'''Funcao responsavel em pegar todos os dados iniciais do ensaio para exibicao'''
+def DadosIniciaisParaEdit(id):
+    lista_dados = []
+    #pega o tipo de anel (i = 0)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[2]))
+
+    #pega o diametro interno do anel (i = 1)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[3]))
+
+    #pega altura do anel (i = 2)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[4]))
+
+    #pega massa do anel (i = 3)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[5]))
+
+    #pega altura do corpo-de-prova (i = 4)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[7]))
+
+    #pega a massa especifica dos grãos (i = 5)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[8]))
+
+    #pega a massa do corpo-de-prova (i = 6)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[6]-row[5]))
+
+    #pega o local da coleta (i = 7)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(row[10])
+
+    #pega o operador da coleta (i = 8)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(row[11])
+
+    #pega a profundidade da coleta (i = 9)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[12]))
+
+    #pega a data da coleta (i = 10)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        data = row[9]
+        data = format(data).replace('-','/')
+        lista_dados.append(data)
+
+    return lista_dados
+
+'''Funcao responsavel em pegar as capsulas usadas no ensaio'''
+def caps(id):
+    caps = []
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        caps.append(row[1])
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        caps.append(row[2])
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        caps.append(row[3])
+
+    return caps
+
+'''Funcao responsavel em pegar os valores de Massa Seca'''
+def mSeca(id):
+    massaSeca = []
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaSeca.append(str(row[4]))
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaSeca.append(str(row[5]))
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaSeca.append(str(row[6]))
+
+    return massaSeca
+
+'''Funcao responsavel em pegar os valores de Massa Umida'''
+def mUmida(id):
+    massaUmida = []
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaUmida.append(str(row[7]))
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaUmida.append(str(row[8]))
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaUmida.append(str(row[9]))
+
+    return massaUmida
+
 '''Cria uma Lista Index de visualização e indentificaçãoptimize'''
 def ListaVisualizacao():
     a = ids()
@@ -97,7 +259,6 @@ def numEstagio():
         id = id + 1
 
     return list_numEstagios
-
 
 '''Adiciona no banco os dados da pressão correspondete a cada Estágio'''
 def InserirDadosPressao(a, b):
@@ -210,5 +371,21 @@ def delete(id):
     c.execute("DELETE FROM coletaDados WHERE id = ?", (id,))
     c.execute("INSERT INTO idDeletados (idDeletados) VALUES (?)", (id,))
     connection.commit()
+
+'''Deleta um estagio no banco de dados e organiza os demais estagios em sequencia'''
+def deleteEstagio(id, id_Estagio, diferenca):
+    c.execute("DELETE FROM pressaoAplicada WHERE id = ? and id_Estagio = ?", (id, id_Estagio))
+    c.execute("DELETE FROM coletaDados WHERE id = ? and id_Estagio = ?", (id, id_Estagio))
+    connection.commit()
+    cont = 1
+    novo_id = id_Estagio
+
+    while cont<=diferenca:
+        c.execute("UPDATE pressaoAplicada SET id_Estagio = ? WHERE id = ? and id_Estagio = ?", (novo_id, id, (id_Estagio + cont),))
+        c.execute("UPDATE coletaDados SET id_Estagio = ? WHERE id = ? and id_Estagio = ?", (novo_id, id, (id_Estagio + cont),))
+        connection.commit()
+        novo_id = novo_id + 1
+        cont = cont + 1
+
 
 ################################################################################################################################################
