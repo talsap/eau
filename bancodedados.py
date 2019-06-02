@@ -11,7 +11,7 @@ c = connection.cursor()
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS capsulas (id INTEGER PRIMARY KEY AUTOINCREMENT, capsula text, massa real)')
     c.execute('CREATE TABLE IF NOT EXISTS datafinalDoEnsaio (id INTEGER PRIMARY KEY AUTOINCREMENT, datafinal text)')
-    c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real, dateColeta text, local text, operador text, profundidade real)')
+    c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real, dateColeta text, local text, operador text, profundidade real, nome_Ensaio text)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
     c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real)')
     c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, raizdotempo real, altura real)')
@@ -20,7 +20,7 @@ def create_table():
 create_table()
 
 '''Atualiza todos os dados iniciais do ensaio no banco de dados'''
-def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massaEsp, dateCol, local, oper, prof, c1, c2, c3, ms1, ms2, ms3, mu1, mu2, mu3):
+def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massaEsp, dateCol, local, oper, prof, c1, c2, c3, ms1, ms2, ms3, mu1, mu2, mu3, IDE):
     c.execute("UPDATE dadosIniciais SET tipoAnel = ? WHERE id = ?", (tipoA, id,))
     c.execute("UPDATE dadosIniciais SET diametro_anel = ? WHERE id = ?", (diametro, id,))
     c.execute("UPDATE dadosIniciais SET altura_anel = ? WHERE id = ?", (alturaA, id,))
@@ -32,6 +32,7 @@ def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massa
     c.execute("UPDATE dadosIniciais SET local = ? WHERE id = ?", (local, id,))
     c.execute("UPDATE dadosIniciais SET operador = ? WHERE id = ?", (oper, id,))
     c.execute("UPDATE dadosIniciais SET profundidade = ? WHERE id = ?", (prof, id,))
+    c.execute("UPDATE dadosIniciais SET nome_Ensaio = ? WHERE id = ?", (IDE, id,))
     c.execute("UPDATE umidadeInicial SET cap01 = ? WHERE id = ?", (c1, id,))
     c.execute("UPDATE umidadeInicial SET cap02 = ? WHERE id = ?", (c2, id,))
     c.execute("UPDATE umidadeInicial SET cap03 = ? WHERE id = ?", (c3, id,))
@@ -72,7 +73,7 @@ def TabelaEstagio(id, id_Estagio):
 def ComboEstagios(id):
     lista = []
     i = 0
-    
+
     for row in c.execute('SELECT max(id_Estagio) FROM pressaoAplicada WHERE id = ? ', (id, )):
         row = format(row).replace('(','')
         row = format(row).replace(')','')
@@ -143,6 +144,10 @@ def DadosIniciaisParaEdit(id):
         data = format(data).replace('-','/')
         lista_dados.append(data)
 
+    #pega o IDE (Identificador do ensaio) da coleta (i = 11)
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista_dados.append(str(row[13]))
+
     return lista_dados
 
 '''Funcao responsavel em pegar as capsulas usadas no ensaio'''
@@ -204,12 +209,14 @@ def juncaoLista():
     id = len(a) - 1
     e = ['']
     f = ['']
+    g = IDE()
+    h = ['']
     while cont <= id:
         try:
-            d.append([a[cont] + b[cont] + c[cont]])
+            d.append([g[cont] + a[cont] + b[cont] + c[cont]])
             cont = cont +1
         except IndexError:
-            d.append([a[cont] + e + f])
+            d.append([h + a[cont] + e + f])
             cont = cont +1
 
     return d
@@ -231,6 +238,15 @@ def datafinal():
         list_datefinal.append([row[1]])
 
     return list_datefinal
+
+'''Captura os IDE (Identificadores de cada Ensaio)'''
+def IDE():
+    list_IDE = []
+
+    for row in c.execute('SELECT * FROM dadosIniciais'):
+        list_IDE.append([row[13]])
+
+    return list_IDE
 
 '''Captura as datas iniciais dos ensaios para criar uma lista para visualização'''
 def dataInicial():
@@ -350,10 +366,10 @@ def data_termino():
     connection.commit()
 
 '''Adiciona os dados iniciais do ensaio no banco'''
-def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade):
+def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade, IDE_E):
     datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M:%S  %d/%m/%Y'))
     dateColeta = str(datetime.datetime.strptime(str(dateColeta), '%m/%d/%y %H:%M:%S').strftime('%d-%m-%Y'))
-    c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, alt_corpo_prova, massa_espc, dateColeta, local, operador, profundidade) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade))
+    c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, alt_corpo_prova, massa_espc, dateColeta, local, operador, profundidade, nome_Ensaio) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade, IDE_E))
     connection.commit()
 
 '''Adiciona os valores para calcular o teor de umidade inicial'''
@@ -387,5 +403,24 @@ def deleteEstagio(id, id_Estagio, diferenca):
         novo_id = novo_id + 1
         cont = cont + 1
 
+'''Função responsavel por adicionar novos dados coletados no ensaio em funcao de um determinado Estagio'''
+def updateAdados(id, id_Estagio, a, b):
+    if a == 0:
+        raizdotempo = 0
+    else:
+        raizdotempo = a**0.5
+
+    c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, raizdotempo, altura) VALUES (?, ?, ?, ?, ?)", (id, id_Estagio, a, raizdotempo, b))
+    connection.commit()
+
+'''Função responsavel por excluir os dados coletados em funcao de um determinado Estagio'''
+def updateAdadosDEL(id, id_Estagio):
+    c.execute("DELETE FROM coletaDados WHERE id = ? and id_Estagio = ?", (id, id_Estagio))
+    connection.commit()
+
+'''Função responsavel por editar os dados de pressao Apicada para cada Estagio'''
+def updateAdadosPressao(id, id_Estagio, pressao):
+    c.execute("UPDATE pressaoAplicada SET pressao_aplicada = ? WHERE id = ? and id_Estagio = ?", (pressao, id, id_Estagio))
+    connection.commit()
 
 ################################################################################################################################################

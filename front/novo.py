@@ -18,25 +18,27 @@ class TelaNovo(wx.Dialog):
             wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio')
 
             self.panel = wx.Panel(self)
-            self.SetSize((450,280))
+            self.SetSize((450,300))
             self.Centre()
             self.Show()
 
             self.FontTitle =wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
             self.title = wx.StaticText(self.panel, -1, 'Cabeçalho', (20,20), (400,-1), wx.ALIGN_CENTER)
             self.title.SetFont(self.FontTitle)
-            self.texto01 = wx.StaticText(self.panel, -1, 'DADOS DA COLETA:',(20,50), (460,-1), wx.ALIGN_LEFT)
-            self.texto02 = wx.StaticText(self.panel, -1, 'Data da coleta', (250,73), (80,-1), wx.ALIGN_LEFT)
-            self.date = wx.adv.DatePickerCtrl(self.panel, id= wx.ID_ANY, dt=wx.DefaultDateTime, pos=(335,70), size=wx.DefaultSize, style = wx.adv.DP_SHOWCENTURY | wx.adv.DP_DROPDOWN , validator=wx.DefaultValidator, name="datectrl")
-            self.texto03 = wx.StaticText(self.panel, -1, 'Local',(85,105), (35,-1), wx.ALIGN_LEFT)
-            self.localColeta = wx.TextCtrl(self.panel, -1, '', (120,100),(300,-1), wx.TE_RIGHT)
+            self.texto01 = wx.StaticText(self.panel, -1, 'Identificador do Ensaio',(20,54), (128,-1), wx.ALIGN_LEFT)
+            self.identificador = wx.TextCtrl(self.panel, -1, '', (148,50),(272,-1), wx.TE_RIGHT)
+            self.texto02 = wx.StaticText(self.panel, -1, 'DADOS DA COLETA:',(20,80), (460,-1), wx.ALIGN_LEFT)
+            self.texto03 = wx.StaticText(self.panel, -1, 'Data da coleta', (250,103), (80,-1), wx.ALIGN_LEFT)
+            self.date = wx.adv.DatePickerCtrl(self.panel, id= wx.ID_ANY, dt=wx.DefaultDateTime, pos=(335,100), size=wx.DefaultSize, style = wx.adv.DP_SHOWCENTURY | wx.adv.DP_DROPDOWN , validator=wx.DefaultValidator, name="datectrl")
+            self.texto04 = wx.StaticText(self.panel, -1, 'Local',(85,135), (35,-1), wx.ALIGN_LEFT)
+            self.localColeta = wx.TextCtrl(self.panel, -1, '', (120,130),(300,-1), wx.TE_RIGHT)
             self.localColeta.SetMaxLength(40)
-            self.texto04 = wx.StaticText(self.panel, -1, 'Operador',(111,135), (55,-1), wx.ALIGN_LEFT)
-            self.operador = wx.TextCtrl(self.panel, -1, '', (168,130), (252,-1), wx.TE_RIGHT)
+            self.texto05 = wx.StaticText(self.panel, -1, 'Operador',(111,165), (55,-1), wx.ALIGN_LEFT)
+            self.operador = wx.TextCtrl(self.panel, -1, '', (168,160), (252,-1), wx.TE_RIGHT)
             self.operador.SetMaxLength(40)
-            self.texto05 = wx.StaticText(self.panel, -1, 'Profundidade (m)',(250,166), (100,-1), wx.ALIGN_LEFT)
-            self.profundidade = wx.TextCtrl(self.panel, -1, '', (350,161),(70,-1), wx.TE_RIGHT)
-            self.continuar = wx.Button(self.panel, -1, 'Continuar', (20, 200), (400,-1), wx.ALIGN_LEFT)
+            self.texto06 = wx.StaticText(self.panel, -1, 'Profundidade (m)',(250,196), (100,-1), wx.ALIGN_LEFT)
+            self.profundidade = wx.TextCtrl(self.panel, -1, '', (350,191),(70,-1), wx.TE_RIGHT)
+            self.continuar = wx.Button(self.panel, -1, 'Continuar', (20, 230), (400,-1), wx.ALIGN_LEFT)
             self.Bind(wx.EVT_BUTTON, self.Prosseguir, self.continuar)
 
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -47,6 +49,7 @@ class TelaNovo(wx.Dialog):
             d = self.profundidade.GetValue()
             d = format(d).replace(',','.')
             d = format(d).replace('-','')
+            e = self.identificador.GetValue()
 
 #---------------------------------------------------------------
             try:
@@ -63,9 +66,9 @@ class TelaNovo(wx.Dialog):
 
         #---------------------------------------------------------------
 
-            if d>0 or d =='':
+            if d<0 or d>=0 or d == '':
                 self.Close(True)
-                con = TelaNovoEnsaio(a, b, c, d)
+                con = TelaNovoEnsaio(a, b, c, d, e)
                 resultado = con.ShowModal()
 
             else:

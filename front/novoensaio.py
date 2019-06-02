@@ -15,13 +15,14 @@ import bancodedados
 class TelaNovoEnsaio(wx.Dialog):
 
 #---------------------------------------------------------------------------------------------------------------------------------
-        def __init__(self, date, local, operador, profundidade, *args, **kwargs):
+        def __init__(self, date, local, operador, profundidade, IDE_E, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio')
 
             self.date = date
             self.local = local
             self.operador = operador
             self.profundidade  = profundidade
+            self.IDE_E = IDE_E
 
             self.panel = wx.Panel(self)
             self.SetSize((500,600))
@@ -133,6 +134,7 @@ class TelaNovoEnsaio(wx.Dialog):
             r = self.local
             s = self.operador
             t = self.profundidade
+            u1 = self.IDE_E
             '''Conecção com o banco, lendo capsula'''
             self.capCadastradas = bancodedados.ler_cap()
 
@@ -245,7 +247,7 @@ class TelaNovoEnsaio(wx.Dialog):
                                 m = ''
                                 n = ''
                                 o = ''
-                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t)
+                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
@@ -253,7 +255,7 @@ class TelaNovoEnsaio(wx.Dialog):
                                 resultado = con.ShowModal()
                             if x == 1 and y == 0 and m>0 and n>0 and o>0:
                                 f = ''
-                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t)
+                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
@@ -263,14 +265,14 @@ class TelaNovoEnsaio(wx.Dialog):
                                 m = ''
                                 n = ''
                                 o = ''
-                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t)
+                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
                                 con = Coleta(y)
                                 resultado = con.ShowModal()
                             if x == 0 and y == 0 and f>0 and m>0 and n>0 and o>0:
-                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t)
+                                bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)

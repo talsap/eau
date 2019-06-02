@@ -4,6 +4,7 @@
 
 import wx
 import bancodedados
+import wx.lib.mixins.listctrl as listmix
 from wx.lib.agw import ultimatelistctrl as ULC
 from novo import TelaNovo
 from Editar import Editar
@@ -11,7 +12,15 @@ from Editar import Editar
 ##################################################################################################################################
 ##################################################################################################################################
 ##################################################################################################################################
+'''Classe da Lista editável'''
+class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
 
+    #----------------------------------------------------------------------
+        def __init__(self, parent, ID=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
+            ULC.UltimateListCtrl.__init__(self, parent, ID, pos, size, agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES | ULC.ULC_NO_HIGHLIGHT)
+            listmix.ListCtrlAutoWidthMixin.__init__(self)
+
+##################################################################################################################################
 '''Tela Inicial'''
 class Tela(wx.Frame):
 
@@ -24,7 +33,7 @@ class Tela(wx.Frame):
      def basic_gui(self):
          self.panel = wx.Panel(self)
 
-         self.SetSize((650,500))
+         self.SetSize((700,500))
          self.Centre()
          self.Show()
 
@@ -48,20 +57,22 @@ class Tela(wx.Frame):
          self.SetMenuBar(menuBar)
 
          '''Botao Novo Ensaio'''
-         self.button = wx.Button(self.panel, -1, '', (301, 60), (48,48))
+         self.button = wx.Button(self.panel, -1, '', (326, 60), (48,48))
          self.button.SetBitmap(wx.Bitmap('icons\icons-adicionar-48px.png'))
          self.Bind(wx.EVT_BUTTON, self.NovoEnsaio, self.button)
 
          '''Lista dos Ensaios'''
-         self.list_ctrl = ULC.UltimateListCtrl(self.panel, size=(605,250), pos=(20,160), agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES )
-         self.list_ctrl.InsertColumn(0, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
-         self.list_ctrl.InsertColumn(1, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=125)
-         self.list_ctrl.InsertColumn(2, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=85)
-         self.list_ctrl.InsertColumn(3, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(4, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(5, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(6, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(7, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
+         self.list_ctrl = EditableListCtrl(self.panel, size=(655,250), pos=(20,160) )
+         self.list_ctrl.InsertColumn(0, 'IDENTIFICADOR', wx.LIST_FORMAT_CENTRE)
+         self.list_ctrl.InsertColumn(1, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
+         self.list_ctrl.InsertColumn(2, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=135)
+         self.list_ctrl.InsertColumn(3, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=70)
+         self.list_ctrl.InsertColumn(4, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
+         self.list_ctrl.InsertColumn(5, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
+         self.list_ctrl.InsertColumn(6, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
+         self.list_ctrl.InsertColumn(7, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
+         self.list_ctrl.InsertColumn(8, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
+         self.list_ctrl.setResizeColumn(0)
 
          lista = bancodedados.ListaVisualizacao()
          index = 0
@@ -70,6 +81,7 @@ class Tela(wx.Frame):
              pos = self.list_ctrl.InsertStringItem(index, row[0])
              self.list_ctrl.SetStringItem(index, 1, row[1])
              self.list_ctrl.SetStringItem(index, 2, row[2])
+             self.list_ctrl.SetStringItem(index, 3, row[3])
              buttonEDT = wx.Button(self.list_ctrl, id = key, label="")
              buttonGRF = wx.Button(self.list_ctrl, id = 4000+key, label="")
              buttonPDF = wx.Button(self.list_ctrl, id = 10000+key, label="")
@@ -80,11 +92,11 @@ class Tela(wx.Frame):
              buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
              buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
              buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
-             self.list_ctrl.SetItemWindow(pos, col=3, wnd=buttonEDT, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonGRF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonPDF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonCSV, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonDEL, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
              self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
              self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
              self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
@@ -93,11 +105,13 @@ class Tela(wx.Frame):
              self.list_ctrl.SetItemData(index, key)
              index += 1
 
-
-         vBox = wx.BoxSizer(wx.VERTICAL)
-         vBox.Add ((- 1, 140))
-         vBox.Add(self.list_ctrl, 1, wx.ALL | wx.EXPAND, 20)
-         self.SetSizer(vBox)
+         self.Bind(wx.EVT_LIST_COL_DRAGGING, self.ColumAdapter, self.list_ctrl)
+         self.Bind(wx.EVT_LIST_COL_RIGHT_CLICK, self.ColumAdapter2, self.list_ctrl)
+         self.Bind(wx.EVT_LIST_COL_CLICK, self.ColumAdapter3, self.list_ctrl)
+         self.vBox = wx.BoxSizer(wx.VERTICAL)
+         self.vBox.Add ((- 1, 140))
+         self.vBox.Add(self.list_ctrl, 1, wx.ALL | wx.EXPAND, 20)
+         self.SetSizer(self.vBox)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def Editar(self, event):
@@ -130,7 +144,7 @@ class Tela(wx.Frame):
      def Deletar(self, event):
          id = event.GetId()
          id = id - 20000
-         
+
          '''Diálogo se deseja realmente excluir o Ensaio'''
          dlg = wx.MessageDialog(None, 'Deseja mesmo excluir esse Ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
          result = dlg.ShowModal()
@@ -141,40 +155,15 @@ class Tela(wx.Frame):
          else:
              dlg.Destroy()
 
+         self.list_ctrl.DeleteAllItems()
          lista = bancodedados.ListaVisualizacao()
          index = 0
 
-         if not lista:
-            '''Lista dos Ensaios'''
-            self.list_ctrl.Destroy()
-            self.list_ctrl = ULC.UltimateListCtrl(self.panel, size=(605,250), pos=(20,160), agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES )
-            self.list_ctrl.InsertColumn(0, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
-            self.list_ctrl.InsertColumn(1, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=125)
-            self.list_ctrl.InsertColumn(2, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=85)
-            self.list_ctrl.InsertColumn(3, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(4, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(5, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(6, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(7, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.Update()
-
-         else:
-            '''Lista dos Ensaios'''
-            self.list_ctrl.Destroy()
-            self.list_ctrl = ULC.UltimateListCtrl(self.panel, size=(605,250), pos=(20,160), agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES )
-            self.list_ctrl.InsertColumn(0, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
-            self.list_ctrl.InsertColumn(1, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=125)
-            self.list_ctrl.InsertColumn(2, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=85)
-            self.list_ctrl.InsertColumn(3, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(4, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(5, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(6, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
-            self.list_ctrl.InsertColumn(7, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
-
-            for key, row in lista:
+         for key, row in lista:
                 pos = self.list_ctrl.InsertStringItem(index, row[0])
                 self.list_ctrl.SetStringItem(index, 1, row[1])
                 self.list_ctrl.SetStringItem(index, 2, row[2])
+                self.list_ctrl.SetStringItem(index, 3, row[3])
                 buttonEDT = wx.Button(self.list_ctrl, id = key, label="")
                 buttonGRF = wx.Button(self.list_ctrl, id = 4000+key, label="")
                 buttonPDF = wx.Button(self.list_ctrl, id = 10000+key, label="")
@@ -185,11 +174,11 @@ class Tela(wx.Frame):
                 buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
                 buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
                 buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
-                self.list_ctrl.SetItemWindow(pos, col=3, wnd=buttonEDT, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonGRF, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonPDF, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonCSV, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonDEL, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
                 self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
                 self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
                 self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
@@ -219,6 +208,7 @@ class Tela(wx.Frame):
              pos = self.list_ctrl.InsertStringItem(index, lista[index][1][0])
              self.list_ctrl.SetStringItem(index, 1, lista[index][1][1])
              self.list_ctrl.SetStringItem(index, 2, lista[index][1][2])
+             self.list_ctrl.SetStringItem(index, 3, lista[index][1][3])
              buttonEDT = wx.Button(self.list_ctrl, id = key, label="")
              buttonGRF = wx.Button(self.list_ctrl, id = 4000+key, label="")
              buttonPDF = wx.Button(self.list_ctrl, id = 10000+key, label="")
@@ -229,11 +219,11 @@ class Tela(wx.Frame):
              buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
              buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
              buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
-             self.list_ctrl.SetItemWindow(pos, col=3, wnd=buttonEDT, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonGRF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonPDF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonCSV, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonDEL, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
              self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
              self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
              self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
@@ -252,6 +242,47 @@ class Tela(wx.Frame):
           aboutPanel = wx.TextCtrl(dlg, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
           dlg.ShowModal()
           dlg.Destroy()
+
+#---------------------------------------------------------------------------------------------------------------------------------
+     def ColumAdapter(self, event):
+          '''Ajusta os tamanhos das colunas ao arrastar'''
+          self.list_ctrl.SetColumnWidth(1, width=115)
+          self.list_ctrl.SetColumnWidth(2, width=135)
+          self.list_ctrl.SetColumnWidth(3, width=70)
+          self.list_ctrl.SetColumnWidth(4, width=40)
+          self.list_ctrl.SetColumnWidth(5, width=40)
+          self.list_ctrl.SetColumnWidth(6, width=40)
+          self.list_ctrl.SetColumnWidth(7, width=40)
+          self.list_ctrl.SetColumnWidth(8, width=40)
+          self.list_ctrl.setResizeColumn(0)
+
+#---------------------------------------------------------------------------------------------------------------------------------
+     def ColumAdapter2(self, event):
+          '''Ajusta os tamanhos das colunas ao clicar com botão esquerdo sobre a coluna'''
+          self.list_ctrl.SetColumnWidth(0, width=115)
+          self.list_ctrl.SetColumnWidth(1, width=115)
+          self.list_ctrl.SetColumnWidth(2, width=135)
+          self.list_ctrl.SetColumnWidth(3, width=70)
+          self.list_ctrl.SetColumnWidth(4, width=40)
+          self.list_ctrl.SetColumnWidth(5, width=40)
+          self.list_ctrl.SetColumnWidth(6, width=40)
+          self.list_ctrl.SetColumnWidth(7, width=40)
+          self.list_ctrl.SetColumnWidth(8, width=40)
+          self.list_ctrl.setResizeColumn(0)
+
+#---------------------------------------------------------------------------------------------------------------------------------
+     def ColumAdapter3(self, event):
+          '''Ajusta os tamanhos das colunas ao clicar com o botão direito sobre a coluna'''
+          self.list_ctrl.SetColumnWidth(0, width=115)
+          self.list_ctrl.SetColumnWidth(1, width=115)
+          self.list_ctrl.SetColumnWidth(2, width=135)
+          self.list_ctrl.SetColumnWidth(3, width=70)
+          self.list_ctrl.SetColumnWidth(4, width=40)
+          self.list_ctrl.SetColumnWidth(5, width=40)
+          self.list_ctrl.SetColumnWidth(6, width=40)
+          self.list_ctrl.SetColumnWidth(7, width=40)
+          self.list_ctrl.SetColumnWidth(8, width=40)
+          self.list_ctrl.setResizeColumn(0)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def onExit(self, event):
