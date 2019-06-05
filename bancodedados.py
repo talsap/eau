@@ -13,7 +13,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS datafinalDoEnsaio (id INTEGER PRIMARY KEY AUTOINCREMENT, datafinal text)')
     c.execute('CREATE TABLE IF NOT EXISTS dadosIniciais (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp text, tipoAnel text, diametro_anel real, altura_anel real, massa_anel real, massa_conj real, alt_corpo_prova real, massa_espc real, dateColeta text, local text, operador text, profundidade real, nome_Ensaio text)')
     c.execute('CREATE TABLE IF NOT EXISTS umidadeInicial (id integer, cap01 text, cap02 text, cap03 text, massaSeca01 real, massaSeca02 real, massaSeca03 real, massaUmida01 real, massaUmida02 real, massaUmida03 real)')
-    c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real)')
+    c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real, status_estagio integer)')
     c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, raizdotempo real, altura real)')
     c.execute('CREATE TABLE IF NOT EXISTS idDeletados (idDeletados integer)')
 
@@ -276,11 +276,50 @@ def numEstagio():
 
     return list_numEstagios
 
+'''Retorna o Status de cada estágio'''
+def StatuStagio(id, id_Estagio):
+    lista = []
+    for row in c.execute('SELECT * FROM pressaoAplicada WHERE id = ? and id_Estagio = ?', (id, id_Estagio)):
+        lista.append(row[3])
+
+    return int(lista[0])
+
+'''Adiciona no banco o Status do estágio'''
+def InserirStatuStagio_id(id, id_Estagio):
+    status = 0
+    c.execute("UPDATE pressaoAplicada SET status_estagio = ? WHERE id = ? and id_Estagio = ?", (status, id, id_Estagio))
+    connection.commit()
+
+'''Adiciona no banco o Status do estágio'''
+def InserirStatuStagio():
+    id = ler_quant_ensaios()
+    id_Estagio = ler_quant_estagios() - 1
+    status = 0
+    c.execute("UPDATE pressaoAplicada SET status_estagio = ? WHERE id = ? and id_Estagio = ?", (status, id, id_Estagio))
+    connection.commit()
+
+'''Adiciona no banco os dados da pressão correspondete a cada Estágio dependendo do id'''
+def InserirDadosPressao_id(id, a, b):
+    status = 1
+    c.execute("INSERT INTO pressaoAplicada (id, id_Estagio, pressao_aplicada, status_estagio) VALUES (?, ?, ?, ?)", (id, a, b, status))
+    connection.commit()
+
 '''Adiciona no banco os dados da pressão correspondete a cada Estágio'''
 def InserirDadosPressao(a, b):
     id = ler_quant_ensaios()
-    id_Estagio = ler_quant_estagios()
-    c.execute("INSERT INTO pressaoAplicada (id, id_Estagio, pressao_aplicada) VALUES (?, ?, ?)", (id, a, b))
+    status = 1
+    c.execute("INSERT INTO pressaoAplicada (id, id_Estagio, pressao_aplicada, status_estagio) VALUES (?, ?, ?, ?)", (id, a, b, status))
+    connection.commit()
+
+'''Adiciona no banco os dados de tempo e raizdotempo e altura do corpo de prova dependendo do id'''
+def InserirDados_id(id, id_Estagio, a, b):
+    id_Estagio = ler_quant_estagios_id(id) - 1
+    if a == 0:
+        raizdotempo = 0
+    else:
+        raizdotempo = a**0.5
+    c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, raizdotempo, altura) VALUES (?, ?, ?, ?, ?)", (id, id_Estagio, a, raizdotempo, b))
+    connection.commit()
 
 '''Adiciona no banco os dados de tempo e raizdotempo e altura do corpo de prova'''
 def InserirDados(a, b):
@@ -293,6 +332,14 @@ def InserirDados(a, b):
     c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, raizdotempo, altura) VALUES (?, ?, ?, ?, ?)", (id, id_Estagio, a, raizdotempo, b))
     connection.commit()
 
+'''Seleciona o diametro correspondente no banco de dados de acordo com o id'''
+def diametro_anel_id(id):
+    for rows in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        diametro = rows[3]
+
+    diametro = diametro/100
+    return diametro
+
 '''Seleciona o diametro correspondente no banco de dados'''
 def diametro_anel():
     id = ler_quant_ensaios()
@@ -301,6 +348,24 @@ def diametro_anel():
 
     diametro = diametro/100
     return diametro
+
+'''Ver a quantidade de Estagios que tem no ensaio'''
+def ler_quant_estagios_no_ensaio(id):
+    identificador = []
+    for rows in c.execute('SELECT * FROM pressaoAplicada WHERE id = ?', (id,)):
+        identificador.append(rows[1])
+
+    id = len(identificador)
+    return id
+
+'''Ver a quantidade de Estagios que tem no ensaio para criar o proximo id_Estagio a depender do id'''
+def ler_quant_estagios_id(id):
+    identificador = []
+    for rows in c.execute('SELECT * FROM pressaoAplicada WHERE id = ?', (id,)):
+        identificador.append(rows[1])
+
+    id = len(identificador) + 1
+    return id
 
 '''Ver a quantidade de Estagios que tem no ensaio para criar o proximo id_Estagio'''
 def ler_quant_estagios():
@@ -339,6 +404,24 @@ def ler_quant_ensaios():
     except UnboundLocalError:
         return 0
 
+'''Ver qual o identificadores do ensaio de acordo com o id'''
+def ler_DO_IDE(id):
+    lista_IDE = []
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        if row[13]!= '':
+            lista_IDE.append(row[13])
+
+    return lista_IDE
+
+'''Ver os identificadores de ensaio já cadastrados no banco'''
+def ler_IDE():
+    lista_IDE = []
+    for row in c.execute('SELECT * FROM dadosIniciais'):
+        if row[13]!= '':
+            lista_IDE.append(row[13])
+
+    return lista_IDE
+
 '''Ver as capsulas que já tem no banco'''
 def ler_cap():
     lista_capsulas = []
@@ -350,6 +433,12 @@ def ler_cap():
 '''Cadastra uma capsula no banco'''
 def data_entry_cap(a, b):
     c.execute("INSERT INTO capsulas (id, capsula, massa) VALUES (NULL, ?, ?)", (a, b))
+    connection.commit()
+
+'''Data de quando o ensaio termina de acordo com o id'''
+def data_termino_Update_id(id):
+    date = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M:%S  %d/%m/%Y'))
+    c.execute("UPDATE datafinalDoEnsaio SET datafinal = ? WHERE id = ?", (date, id,))
     connection.commit()
 
 '''Data de quando o ensaio termina'''

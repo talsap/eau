@@ -18,7 +18,6 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
     #----------------------------------------------------------------------
         def __init__(self, parent, ID=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
             ULC.UltimateListCtrl.__init__(self, parent, ID, pos, size, agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES | ULC.ULC_NO_HIGHLIGHT)
-            listmix.ListCtrlAutoWidthMixin.__init__(self)
 
 ##################################################################################################################################
 '''Tela Inicial'''
@@ -61,20 +60,31 @@ class Tela(wx.Frame):
          self.button.SetBitmap(wx.Bitmap('icons\icons-adicionar-48px.png'))
          self.Bind(wx.EVT_BUTTON, self.NovoEnsaio, self.button)
 
+         lista = bancodedados.ListaVisualizacao()
+
          '''Lista dos Ensaios'''
          self.list_ctrl = EditableListCtrl(self.panel, size=(655,250), pos=(20,160) )
-         self.list_ctrl.InsertColumn(0, 'IDENTIFICADOR', wx.LIST_FORMAT_CENTRE)
-         self.list_ctrl.InsertColumn(1, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
-         self.list_ctrl.InsertColumn(2, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=135)
-         self.list_ctrl.InsertColumn(3, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=70)
-         self.list_ctrl.InsertColumn(4, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(5, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(6, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(7, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.InsertColumn(8, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
-         self.list_ctrl.setResizeColumn(0)
+         if len(lista) >=8:
+             self.list_ctrl.InsertColumn(0, 'IDENTIFICADOR', wx.LIST_FORMAT_CENTRE, width=115)
+             self.list_ctrl.InsertColumn(1, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
+             self.list_ctrl.InsertColumn(2, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=135)
+             self.list_ctrl.InsertColumn(3, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=70)
+             self.list_ctrl.InsertColumn(4, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(5, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(6, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(7, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(8, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
+         else:
+             self.list_ctrl.InsertColumn(0, 'IDENTIFICADOR', wx.LIST_FORMAT_CENTRE, width=125)
+             self.list_ctrl.InsertColumn(1, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=120)
+             self.list_ctrl.InsertColumn(2, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=135)
+             self.list_ctrl.InsertColumn(3, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=70)
+             self.list_ctrl.InsertColumn(4, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(5, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(6, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(7, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
+             self.list_ctrl.InsertColumn(8, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
 
-         lista = bancodedados.ListaVisualizacao()
          index = 0
 
          for key, row in lista:
@@ -118,7 +128,59 @@ class Tela(wx.Frame):
          id = event.GetId()
          dialogo = Editar(id)
          resultado = dialogo.ShowModal()
+         self.list_ctrl.DeleteAllItems()
+         lista = bancodedados.ListaVisualizacao()
+         index = 0
 
+         for key, row in lista:
+                pos = self.list_ctrl.InsertStringItem(index, row[0])
+                self.list_ctrl.SetStringItem(index, 1, row[1])
+                self.list_ctrl.SetStringItem(index, 2, row[2])
+                self.list_ctrl.SetStringItem(index, 3, row[3])
+                buttonEDT = wx.Button(self.list_ctrl, id = key, label="")
+                buttonGRF = wx.Button(self.list_ctrl, id = 4000+key, label="")
+                buttonPDF = wx.Button(self.list_ctrl, id = 10000+key, label="")
+                buttonCSV = wx.Button(self.list_ctrl, id = 15000+key, label="")
+                buttonDEL = wx.Button(self.list_ctrl, id = 20000+key, label="")
+                buttonEDT.SetBitmap(wx.Bitmap('icons\icons-editar-arquivo-24px.png'))
+                buttonGRF.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
+                buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
+                buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
+                buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
+                self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
+                self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
+                self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
+                self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
+                self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
+                self.Bind(wx.EVT_BUTTON, self.exportCSV, buttonCSV)
+                self.Bind(wx.EVT_BUTTON, self.Deletar, buttonDEL)
+                self.list_ctrl.SetItemData(index, key)
+                index += 1
+
+         if len(lista) >=8:
+            self.list_ctrl.SetColumnWidth(0, width=115)
+            self.list_ctrl.SetColumnWidth(1, width=115)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+         else:
+            self.list_ctrl.SetColumnWidth(0, width=125)
+            self.list_ctrl.SetColumnWidth(1, width=120)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+            
 #---------------------------------------------------------------------------------------------------------------------------------
      def Graficos(self, event):
          id = event.GetId()
@@ -187,6 +249,27 @@ class Tela(wx.Frame):
                 self.list_ctrl.SetItemData(index, key)
                 index += 1
 
+         if len(lista) >=8:
+            self.list_ctrl.SetColumnWidth(0, width=115)
+            self.list_ctrl.SetColumnWidth(1, width=115)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+         else:
+            self.list_ctrl.SetColumnWidth(0, width=125)
+            self.list_ctrl.SetColumnWidth(1, width=120)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+
 #---------------------------------------------------------------------------------------------------------------------------------
      def NovoEnsaio(self, event):
          quant = bancodedados.quant_ensaios_deletados()
@@ -233,6 +316,28 @@ class Tela(wx.Frame):
              self.list_ctrl.Update()
              valor_Logico = valor_Logico + 1
 
+         lista = bancodedados.ListaVisualizacao()
+         if len(lista) >=8:
+            self.list_ctrl.SetColumnWidth(0, width=115)
+            self.list_ctrl.SetColumnWidth(1, width=115)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+         else:
+            self.list_ctrl.SetColumnWidth(0, width=125)
+            self.list_ctrl.SetColumnWidth(1, width=120)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+
 #---------------------------------------------------------------------------------------------------------------------------------
      def ajudaGUI(self, event):
           '''Dialogo ajuda'''
@@ -245,44 +350,78 @@ class Tela(wx.Frame):
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def ColumAdapter(self, event):
-          '''Ajusta os tamanhos das colunas ao arrastar'''
-          self.list_ctrl.SetColumnWidth(1, width=115)
-          self.list_ctrl.SetColumnWidth(2, width=135)
-          self.list_ctrl.SetColumnWidth(3, width=70)
-          self.list_ctrl.SetColumnWidth(4, width=40)
-          self.list_ctrl.SetColumnWidth(5, width=40)
-          self.list_ctrl.SetColumnWidth(6, width=40)
-          self.list_ctrl.SetColumnWidth(7, width=40)
-          self.list_ctrl.SetColumnWidth(8, width=40)
-          self.list_ctrl.setResizeColumn(0)
+         lista = bancodedados.ListaVisualizacao()
+         '''Ajusta os tamanhos das colunas ao arrastar'''
+         if len(lista) >=8:
+            self.list_ctrl.SetColumnWidth(0, width=115)
+            self.list_ctrl.SetColumnWidth(1, width=115)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+         else:
+            self.list_ctrl.SetColumnWidth(0, width=125)
+            self.list_ctrl.SetColumnWidth(1, width=120)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def ColumAdapter2(self, event):
-          '''Ajusta os tamanhos das colunas ao clicar com botão esquerdo sobre a coluna'''
-          self.list_ctrl.SetColumnWidth(0, width=115)
-          self.list_ctrl.SetColumnWidth(1, width=115)
-          self.list_ctrl.SetColumnWidth(2, width=135)
-          self.list_ctrl.SetColumnWidth(3, width=70)
-          self.list_ctrl.SetColumnWidth(4, width=40)
-          self.list_ctrl.SetColumnWidth(5, width=40)
-          self.list_ctrl.SetColumnWidth(6, width=40)
-          self.list_ctrl.SetColumnWidth(7, width=40)
-          self.list_ctrl.SetColumnWidth(8, width=40)
-          self.list_ctrl.setResizeColumn(0)
+         lista = bancodedados.ListaVisualizacao()
+         '''Ajusta os tamanhos das colunas ao clicar com botão esquerdo sobre a coluna'''
+         if len(lista) >=8:
+            self.list_ctrl.SetColumnWidth(0, width=115)
+            self.list_ctrl.SetColumnWidth(1, width=115)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+         else:
+            self.list_ctrl.SetColumnWidth(0, width=125)
+            self.list_ctrl.SetColumnWidth(1, width=120)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def ColumAdapter3(self, event):
-          '''Ajusta os tamanhos das colunas ao clicar com o botão direito sobre a coluna'''
-          self.list_ctrl.SetColumnWidth(0, width=115)
-          self.list_ctrl.SetColumnWidth(1, width=115)
-          self.list_ctrl.SetColumnWidth(2, width=135)
-          self.list_ctrl.SetColumnWidth(3, width=70)
-          self.list_ctrl.SetColumnWidth(4, width=40)
-          self.list_ctrl.SetColumnWidth(5, width=40)
-          self.list_ctrl.SetColumnWidth(6, width=40)
-          self.list_ctrl.SetColumnWidth(7, width=40)
-          self.list_ctrl.SetColumnWidth(8, width=40)
-          self.list_ctrl.setResizeColumn(0)
+         lista = bancodedados.ListaVisualizacao()
+         '''Ajusta os tamanhos das colunas ao clicar com o botão direito sobre a coluna'''
+         if len(lista) >=8:
+            self.list_ctrl.SetColumnWidth(0, width=115)
+            self.list_ctrl.SetColumnWidth(1, width=115)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
+         else:
+            self.list_ctrl.SetColumnWidth(0, width=125)
+            self.list_ctrl.SetColumnWidth(1, width=120)
+            self.list_ctrl.SetColumnWidth(2, width=135)
+            self.list_ctrl.SetColumnWidth(3, width=70)
+            self.list_ctrl.SetColumnWidth(4, width=40)
+            self.list_ctrl.SetColumnWidth(5, width=40)
+            self.list_ctrl.SetColumnWidth(6, width=40)
+            self.list_ctrl.SetColumnWidth(7, width=40)
+            self.list_ctrl.SetColumnWidth(8, width=40)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def onExit(self, event):

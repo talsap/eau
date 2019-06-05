@@ -8,6 +8,7 @@ import wx.adv
 import bancodedados
 import datetime
 import wx.lib.mixins.listctrl  as  listmix
+from coleta02 import Coleta02
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -237,6 +238,8 @@ class Page01(wx.Panel):
      def salvarDados(self, event):
          id = self.id
          capCadastradas = bancodedados.ler_cap()
+         identificadoresCaddastrados = bancodedados.ler_IDE()
+         identificadorDoEnsaio = bancodedados.ler_DO_IDE(id)
          a = self.date.GetValue()
          b = self.localColeta.GetValue()
          c = self.operador.GetValue()
@@ -305,105 +308,110 @@ class Page01(wx.Panel):
             if d>=0 and f>0 and g>0 and h>0 and i>0 and j>0 and k>0 and o>0 and p>0 and q>0 and r>0 and s>0 and t>0:
                 if f!= '' and g!= '' and h!= '' and i!= '' and j!= '' and k!= '' and o!= '' and p!= '' and q!= '' and r!= '' and  s!= '' and t!= '' and l!= ''  and m!= '' and n!= '':
                     if l in capCadastradas and m in capCadastradas and n in capCadastradas and l!= m and l!= n and m!= n:
-                        massaC = h + j
-                        dateCol = str(datetime.datetime.strptime(str(a), '%m/%d/%y %H:%M:%S').strftime('%d-%m-%Y'))
-                        bancodedados.UpdateDadosEnsaio(id, e, f, g, h, massaC, i, k, dateCol, b, c, d, l, m, n, r, s, t, o, p, q, u1)
+                        if u1 in identificadoresCaddastrados and u1!= identificadorDoEnsaio[0]:
+                            print('Ja existe esse identificador')
+                            menssagError = wx.MessageDialog(self, 'Já existe um ensaio com esse identificador', 'EAU', wx.OK|wx.ICON_INFORMATION)
+                            aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+                            menssagError.ShowModal()
+                            menssagError.Destroy()
+                        else:
+                            massaC = h + j
+                            dateCol = str(datetime.datetime.strptime(str(a), '%m/%d/%y %H:%M:%S').strftime('%d-%m-%Y'))
+                            bancodedados.UpdateDadosEnsaio(id, e, f, g, h, massaC, i, k, dateCol, b, c, d, l, m, n, r, s, t, o, p, q, u1)
 
-                        caps = bancodedados.caps(id)
-                        massaSeca = bancodedados.mSeca(id)
-                        massaUmida = bancodedados.mUmida(id)
-                        dadosIniciais = bancodedados.DadosIniciaisParaEdit(id)
-                        self.identificador.Destroy()
-                        self.date.Destroy()
-                        self.localColeta.Destroy()
-                        self.operador.Destroy()
-                        self.profundidade.Destroy()
-                        self.tipoAnel.Destroy()
-                        self.diametro.Destroy()
-                        self.alturaAnel.Destroy()
-                        self.massaAnel.Destroy()
-                        self.alturaCP.Destroy()
-                        self.massaCP.Destroy()
-                        self.massaEspecifica.Destroy()
-                        self.capsulaComboBox01.Destroy()
-                        self.capsulaComboBox02.Destroy()
-                        self.capsulaComboBox03.Destroy()
-                        self.massaUmida01.Destroy()
-                        self.massaUmida02.Destroy()
-                        self.massaUmida03.Destroy()
-                        self.massaSeca01.Destroy()
-                        self.massaSeca02.Destroy()
-                        self.massaSeca03.Destroy()
-                        self.Salvar.Destroy()
-                        self.identificador = wx.TextCtrl(self, -1, dadosIniciais[11], (324,50),(141,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.date = wx.TextCtrl(self, -1, dadosIniciais[10], (380,80),(85,-1), wx.TE_READONLY | wx.TE_LEFT)
-                        self.localColeta = wx.TextCtrl(self, -1, dadosIniciais[7], (165,110),(300,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.operador = wx.TextCtrl(self, -1, dadosIniciais[8], (213,140), (252,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.profundidade = wx.TextCtrl(self, -1, dadosIniciais[9], (395,170),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.tipoAnel = wx.TextCtrl(self, -1, dadosIniciais[0], (265,215),(200,-1), wx.TE_READONLY | wx.TE_LEFT)
-                        self.diametro = wx.TextCtrl(self, -1, dadosIniciais[1], (395,245),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.alturaAnel = wx.TextCtrl(self, -1, dadosIniciais[2], (176,245),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaAnel = wx.TextCtrl(self, -1, dadosIniciais[3], (395,275),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.alturaCP = wx.TextCtrl(self, -1, dadosIniciais[4], (395,320),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaCP = wx.TextCtrl(self, -1, dadosIniciais[6], (395,350),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaEspecifica = wx.TextCtrl(self, -1, dadosIniciais[5], (395,380),(70,-1),  wx.TE_READONLY | wx.TE_RIGHT)
-                        self.cap01 = wx.TextCtrl(self, -1, caps[0], (235,435),(70,-1), style = wx.TE_READONLY | wx.TE_LEFT)
-                        self.cap02 = wx.TextCtrl(self, -1, caps[1], (315,435),(70,-1), style = wx.TE_READONLY | wx.TE_LEFT)
-                        self.cap03 = wx.TextCtrl(self, -1, caps[2], (395,435),(70,-1), style = wx.TE_READONLY | wx.TE_LEFT)
-                        self.massaUmida01 = wx.TextCtrl(self, -1, massaUmida[0], (235,465),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaUmida02 = wx.TextCtrl(self, -1, massaUmida[1], (315,465),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaUmida03 = wx.TextCtrl(self, -1, massaUmida[2], (395,465),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaSeca01 = wx.TextCtrl(self, -1, massaSeca[0], (235,495),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaSeca02 = wx.TextCtrl(self, -1, massaSeca[1], (315,495),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.massaSeca03 = wx.TextCtrl(self, -1, massaSeca[2], (395,495),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                        self.Editar = wx.Button(self, -1, 'Editar', (188, 534), (112,-1), wx.ALIGN_LEFT)
-                        self.identificador.SetForegroundColour((119,118,114))
-                        self.date.SetForegroundColour((119,118,114))
-                        self.localColeta.SetForegroundColour((119,118,114))
-                        self.operador.SetForegroundColour((119,118,114))
-                        self.profundidade.SetForegroundColour((119,118,114))
-                        self.tipoAnel.SetForegroundColour((119,118,114))
-                        self.diametro.SetForegroundColour((119,118,114))
-                        self.alturaAnel.SetForegroundColour((119,118,114))
-                        self.massaAnel.SetForegroundColour((119,118,114))
-                        self.alturaCP.SetForegroundColour((119,118,114))
-                        self.massaCP.SetForegroundColour((119,118,114))
-                        self.massaEspecifica.SetForegroundColour((119,118,114))
-                        self.cap01.SetForegroundColour((119,118,114))
-                        self.cap02.SetForegroundColour((119,118,114))
-                        self.cap03.SetForegroundColour((119,118,114))
-                        self.massaUmida01.SetForegroundColour((119,118,114))
-                        self.massaUmida02.SetForegroundColour((119,118,114))
-                        self.massaUmida03.SetForegroundColour((119,118,114))
-                        self.massaSeca01.SetForegroundColour((119,118,114))
-                        self.massaSeca02.SetForegroundColour((119,118,114))
-                        self.massaSeca03.SetForegroundColour((119,118,114))
-                        self.texto1.SetForegroundColour((119,118,114))
-                        self.texto02.SetForegroundColour((119,118,114))
-                        self.texto03.SetForegroundColour((119,118,114))
-                        self.texto04.SetForegroundColour((119,118,114))
-                        self.texto05.SetForegroundColour((119,118,114))
-                        self.texto07.SetForegroundColour((119,118,114))
-                        self.texto08.SetForegroundColour((119,118,114))
-                        self.texto09.SetForegroundColour((119,118,114))
-                        self.texto10.SetForegroundColour((119,118,114))
-                        self.texto12.SetForegroundColour((119,118,114))
-                        self.texto13.SetForegroundColour((119,118,114))
-                        self.texto14.SetForegroundColour((119,118,114))
-                        self.texto16.SetForegroundColour((119,118,114))
-                        self.texto17.SetForegroundColour((119,118,114))
-                        self.texto18.SetForegroundColour((119,118,114))
-                        self.Update()
-                        self.Refresh()
-                        self.Bind(wx.EVT_BUTTON, self.editarDados, self.Editar)
-
+                            caps = bancodedados.caps(id)
+                            massaSeca = bancodedados.mSeca(id)
+                            massaUmida = bancodedados.mUmida(id)
+                            dadosIniciais = bancodedados.DadosIniciaisParaEdit(id)
+                            self.identificador.Destroy()
+                            self.date.Destroy()
+                            self.localColeta.Destroy()
+                            self.operador.Destroy()
+                            self.profundidade.Destroy()
+                            self.tipoAnel.Destroy()
+                            self.diametro.Destroy()
+                            self.alturaAnel.Destroy()
+                            self.massaAnel.Destroy()
+                            self.alturaCP.Destroy()
+                            self.massaCP.Destroy()
+                            self.massaEspecifica.Destroy()
+                            self.capsulaComboBox01.Destroy()
+                            self.capsulaComboBox02.Destroy()
+                            self.capsulaComboBox03.Destroy()
+                            self.massaUmida01.Destroy()
+                            self.massaUmida02.Destroy()
+                            self.massaUmida03.Destroy()
+                            self.massaSeca01.Destroy()
+                            self.massaSeca02.Destroy()
+                            self.massaSeca03.Destroy()
+                            self.Salvar.Destroy()
+                            self.identificador = wx.TextCtrl(self, -1, dadosIniciais[11], (324,50),(141,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.date = wx.TextCtrl(self, -1, dadosIniciais[10], (380,80),(85,-1), wx.TE_READONLY | wx.TE_LEFT)
+                            self.localColeta = wx.TextCtrl(self, -1, dadosIniciais[7], (165,110),(300,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.operador = wx.TextCtrl(self, -1, dadosIniciais[8], (213,140), (252,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.profundidade = wx.TextCtrl(self, -1, dadosIniciais[9], (395,170),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.tipoAnel = wx.TextCtrl(self, -1, dadosIniciais[0], (265,215),(200,-1), wx.TE_READONLY | wx.TE_LEFT)
+                            self.diametro = wx.TextCtrl(self, -1, dadosIniciais[1], (395,245),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.alturaAnel = wx.TextCtrl(self, -1, dadosIniciais[2], (176,245),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaAnel = wx.TextCtrl(self, -1, dadosIniciais[3], (395,275),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.alturaCP = wx.TextCtrl(self, -1, dadosIniciais[4], (395,320),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaCP = wx.TextCtrl(self, -1, dadosIniciais[6], (395,350),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaEspecifica = wx.TextCtrl(self, -1, dadosIniciais[5], (395,380),(70,-1),  wx.TE_READONLY | wx.TE_RIGHT)
+                            self.cap01 = wx.TextCtrl(self, -1, caps[0], (235,435),(70,-1), style = wx.TE_READONLY | wx.TE_LEFT)
+                            self.cap02 = wx.TextCtrl(self, -1, caps[1], (315,435),(70,-1), style = wx.TE_READONLY | wx.TE_LEFT)
+                            self.cap03 = wx.TextCtrl(self, -1, caps[2], (395,435),(70,-1), style = wx.TE_READONLY | wx.TE_LEFT)
+                            self.massaUmida01 = wx.TextCtrl(self, -1, massaUmida[0], (235,465),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaUmida02 = wx.TextCtrl(self, -1, massaUmida[1], (315,465),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaUmida03 = wx.TextCtrl(self, -1, massaUmida[2], (395,465),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaSeca01 = wx.TextCtrl(self, -1, massaSeca[0], (235,495),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaSeca02 = wx.TextCtrl(self, -1, massaSeca[1], (315,495),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.massaSeca03 = wx.TextCtrl(self, -1, massaSeca[2], (395,495),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
+                            self.Editar = wx.Button(self, -1, 'Editar', (188, 534), (112,-1), wx.ALIGN_LEFT)
+                            self.identificador.SetForegroundColour((119,118,114))
+                            self.date.SetForegroundColour((119,118,114))
+                            self.localColeta.SetForegroundColour((119,118,114))
+                            self.operador.SetForegroundColour((119,118,114))
+                            self.profundidade.SetForegroundColour((119,118,114))
+                            self.tipoAnel.SetForegroundColour((119,118,114))
+                            self.diametro.SetForegroundColour((119,118,114))
+                            self.alturaAnel.SetForegroundColour((119,118,114))
+                            self.massaAnel.SetForegroundColour((119,118,114))
+                            self.alturaCP.SetForegroundColour((119,118,114))
+                            self.massaCP.SetForegroundColour((119,118,114))
+                            self.massaEspecifica.SetForegroundColour((119,118,114))
+                            self.cap01.SetForegroundColour((119,118,114))
+                            self.cap02.SetForegroundColour((119,118,114))
+                            self.cap03.SetForegroundColour((119,118,114))
+                            self.massaUmida01.SetForegroundColour((119,118,114))
+                            self.massaUmida02.SetForegroundColour((119,118,114))
+                            self.massaUmida03.SetForegroundColour((119,118,114))
+                            self.massaSeca01.SetForegroundColour((119,118,114))
+                            self.massaSeca02.SetForegroundColour((119,118,114))
+                            self.massaSeca03.SetForegroundColour((119,118,114))
+                            self.texto1.SetForegroundColour((119,118,114))
+                            self.texto02.SetForegroundColour((119,118,114))
+                            self.texto03.SetForegroundColour((119,118,114))
+                            self.texto04.SetForegroundColour((119,118,114))
+                            self.texto05.SetForegroundColour((119,118,114))
+                            self.texto07.SetForegroundColour((119,118,114))
+                            self.texto08.SetForegroundColour((119,118,114))
+                            self.texto09.SetForegroundColour((119,118,114))
+                            self.texto10.SetForegroundColour((119,118,114))
+                            self.texto12.SetForegroundColour((119,118,114))
+                            self.texto13.SetForegroundColour((119,118,114))
+                            self.texto14.SetForegroundColour((119,118,114))
+                            self.texto16.SetForegroundColour((119,118,114))
+                            self.texto17.SetForegroundColour((119,118,114))
+                            self.texto18.SetForegroundColour((119,118,114))
+                            self.Update()
+                            self.Refresh()
+                            self.Bind(wx.EVT_BUTTON, self.editarDados, self.Editar)
                     else:
                         print('O nome de uma das capsulas ou nao esta cadastrada ou nao foi informada ou e identica a outra')
                         menssagError = wx.MessageDialog(self, 'O nome de uma das cápsulas ou não está cadastrada ou não foi informada corretamente ou pode ter duas cápsulas idênticas', 'EAU', wx.OK|wx.ICON_INFORMATION)
                         aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
                         menssagError.ShowModal()
                         menssagError.Destroy()
-
                 else:
                     print('Algum dos campos esta vazio')
                     menssagError = wx.MessageDialog(self, 'Algum dos campos prioritários pode não ter sido preenchido', 'EAU', wx.OK|wx.ICON_INFORMATION)
@@ -423,46 +431,61 @@ class Page01(wx.Panel):
 #---------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------
 class Page02(wx.Panel):
+
+#---------------------------------------------------------------------------------------------------------------------------------
      def __init__(self, parent, id):
          super(Page02, self).__init__(parent)
          self.id = id
-         id_Estagio = 1
+
 
          try:
+             id_Estagio = bancodedados.ler_quant_estagios_no_ensaio(id)
              list_estagios = bancodedados.ComboEstagios(id)
              rows = bancodedados.TabelaEstagio(id, id_Estagio)
              pre = bancodedados.Pressao(id, id_Estagio)
+             statusEst = bancodedados.StatuStagio(id, id_Estagio)
 
              self.FontTitle =wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
              self.title = wx.StaticText(self, -1, 'DADOS COLETADOS', (20,20), (460,-1), wx.ALIGN_CENTER)
              self.title.SetFont(self.FontTitle)
-             self.ComboEstagios = wx.ComboBox(self, -1, list_estagios[0], (20,50),(220,-1), list_estagios)
-             self.Excluir = wx.Button(self, -1, 'Excluir', (380, 140), (90,-1), wx.ALIGN_LEFT)
-             self.Editar = wx.Button(self, -1, 'Editar', (380, 175), (90,-1), wx.ALIGN_LEFT)
-             self.Salvar = wx.Button(self, -1, 'Salvar', (380, 210), (90,-1), wx.ALIGN_LEFT)
-             self.Coletar = wx.Button(self, -1, 'Coletar', (380, 245), (90,-1), wx.ALIGN_LEFT)
-             self.texto01 = wx.StaticText(self, -1, 'Pressão Aplicada (kPa)',(255,94), (125,-1), wx.ALIGN_LEFT)
-             self.pressaoA = wx.TextCtrl(self, -1, pre[0], (380,90),(90,-1), wx.TE_READONLY | wx.TE_RIGHT)
-             self.list_ctrl = wx.ListCtrl(self, size = (220,400), pos = (20,90), style =  wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
+             self.text00 = wx.StaticText(self, -1, "STATUS ESTÁGIO:", (255,94), (100,-1), wx.ALIGN_LEFT)
+             self.ComboEstagios = wx.ComboBox(self, -1, list_estagios[id_Estagio-1], (20,50),(220,-1), list_estagios)
+             self.Coletar = wx.Button(self, -1, 'Coletar', (255, 160), (215,-1), wx.ALIGN_LEFT)
+             self.texto01 = wx.StaticText(self, -1, 'Pressão Aplicada (kPa)',(255,124), (125,-1), wx.ALIGN_LEFT)
+             self.pressaoA = wx.TextCtrl(self, -1, pre[0], (380,120),(90,-1), wx.TE_READONLY | wx.TE_RIGHT)
+
+             self.list_ctrl = wx.ListCtrl(self, size = (220,460), pos = (20,90), style =  wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
              self.list_ctrl.InsertColumn(0, "Tempo (s)", width=100)
              self.list_ctrl.InsertColumn(1, "Altura (mm)", width=110)
-             self.Salvar.SetForegroundColour((119,118,114))
+
              self.list_ctrl.SetForegroundColour((119,118,114))
              self.pressaoA.SetForegroundColour((119,118,114))
              self.texto01.SetForegroundColour((119,118,114))
              self.Bind(wx.EVT_COMBOBOX, self.EstagioVisualizacao, self.ComboEstagios)
-             self.Bind(wx.EVT_BUTTON, self.exc, self.Excluir)
-             self.Bind(wx.EVT_BUTTON, self.edt, self.Editar)
+
+             if statusEst == 0:
+                 self.text02 = wx.StaticText(self, -1, "Concluído", (355,94), (80,-1), wx.ALIGN_LEFT)
+                 self.text02.SetForegroundColour('green')
+                 self.Coletar.SetForegroundColour((119,118,114))
+
+             else:
+                 self.text02 = wx.StaticText(self, -1, "Incompleto", (355,94), (80,-1), wx.ALIGN_LEFT)
+                 self.text02.SetForegroundColour('red')
+                 self.Coletar.SetForegroundColour((0,0,0))
+                 self.list_ctrl.SetForegroundColour((0,0,0))
+                 self.pressaoA.SetForegroundColour((0,0,0))
+                 self.texto01.SetForegroundColour((0,0,0))
+                 self.Bind(wx.EVT_BUTTON, self.Coleta, self.Coletar)
 
              index = 0
-
              for row in rows:
                  self.list_ctrl.InsertItem(index, row[0])
                  self.list_ctrl.SetItem(index, 1, row[1])
                  index += 1
          except:
-             raise #Fazer tela com um botão de coletar dados somente
-
+             self.text = wx.StaticText(self, -1, "Nenhum coleta foi realizada ainda.", (0,20), (500,-1), wx.ALIGN_CENTER)
+             self.Coletar1 = wx.Button(self, -1, 'Coletar', (205, 40), (90,-1), wx.ALIGN_LEFT)
+             self.Bind(wx.EVT_BUTTON, self.ColetaDados, self.Coletar1)
 #---------------------------------------------------------------------------------------------------------------------------------
      def EstagioVisualizacao(self, event):
          id = self.id
@@ -471,158 +494,58 @@ class Page02(wx.Panel):
 
          rows = bancodedados.TabelaEstagio(id, id_Estagio)
          pre = bancodedados.Pressao(id, id_Estagio)
+         statusEst = bancodedados.StatuStagio(id, id_Estagio)
 
          self.list_ctrl.Destroy()
          self.pressaoA.Destroy()
-         self.pressaoA = wx.TextCtrl(self, -1, pre[0], (380,90),(90,-1), wx.TE_READONLY | wx.TE_RIGHT)
+         self.pressaoA = wx.TextCtrl(self, -1, pre[0], (380,120),(90,-1), wx.TE_READONLY | wx.TE_RIGHT)
          self.pressaoA.SetForegroundColour((119,118,114))
-         self.list_ctrl = wx.ListCtrl(self, size = (220,400), pos = (20,90), style =  wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
+         self.list_ctrl = wx.ListCtrl(self, size = (220,460), pos = (20,90), style =  wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
          self.list_ctrl.InsertColumn(0, "Tempo (s)", width=100)
          self.list_ctrl.InsertColumn(1, "Altura (mm)", width=110)
          self.list_ctrl.SetForegroundColour((119,118,114))
          self.list_ctrl.Update()
 
-         index = 0
+         if statusEst == 0:
+            self.text02.Destroy()
+            self.Coletar.Destroy()
+            self.Coletar = wx.Button(self, -1, 'Coletar', (255, 160), (215,-1), wx.ALIGN_LEFT)
+            self.text02 = wx.StaticText(self, -1, "Concluído", (355,94), (80,-1), wx.ALIGN_LEFT)
+            self.text02.SetForegroundColour('green')
+            self.Coletar.SetForegroundColour((119,118,114))
 
+         else:
+            self.text02.Destroy()
+            self.Coletar.Destroy()
+            self.text02 = wx.StaticText(self, -1, "Incompleto", (355,94), (80,-1), wx.ALIGN_LEFT)
+            self.text02.SetForegroundColour('red')
+            self.Coletar = wx.Button(self, -1, 'Coletar', (255, 160), (215,-1), wx.ALIGN_LEFT)
+            self.Coletar.SetForegroundColour((0,0,0))
+            self.list_ctrl.SetForegroundColour((0,0,0))
+            self.pressaoA.SetForegroundColour((0,0,0))
+            self.texto01.SetForegroundColour((0,0,0))
+            self.Bind(wx.EVT_BUTTON, self.Coleta, self.Coletar)
+
+         index = 0
          for row in rows:
              self.list_ctrl.InsertItem(index, row[0])
              self.list_ctrl.SetItem(index, 1, row[1])
              index += 1
 
 #---------------------------------------------------------------------------------------------------------------------------------
-     def exc(self, event):
+     def Coleta(self, event):
          id = self.id
-         quant_estagios = len(bancodedados.ComboEstagios(id))
-         id_Estagio = self.ComboEstagios.GetValue()
-         id_Estagio = int(re.sub('[^0-9]', '', id_Estagio))
-         diferenca = quant_estagios - id_Estagio
+         print("OLA")
 
-         '''Diálogo se deseja realmente excluir o Estágio'''
-         dlg = wx.MessageDialog(None, 'Deseja mesmo excluir os dados desse Estágio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
-         result = dlg.ShowModal()
-
-         if result == wx.ID_YES:
-             bancodedados.deleteEstagio(id, id_Estagio, diferenca)
-             id_Estagio = 1
-
-             try:
-                 list_estagios = bancodedados.ComboEstagios(id)
-                 rows = bancodedados.TabelaEstagio(id, id_Estagio)
-                 pre = bancodedados.Pressao(id, id_Estagio)
-
-                 self.ComboEstagios.Destroy()
-                 self.list_ctrl.Destroy()
-                 self.pressaoA.Destroy()
-                 self.pressaoA = wx.TextCtrl(self, -1, pre[0], (380,90),(90,-1), wx.TE_READONLY | wx.TE_RIGHT)
-                 self.pressaoA.SetForegroundColour((119,118,114))
-                 self.ComboEstagios = wx.ComboBox(self, -1, list_estagios[0], (20,50),(220,-1), list_estagios)
-                 self.list_ctrl = wx.ListCtrl(self, size = (220,400), pos = (20,90), style =  wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
-                 self.list_ctrl.InsertColumn(0, "Tempo (s)", width=100)
-                 self.list_ctrl.InsertColumn(1, "Altura (mm)", width=110)
-                 self.list_ctrl.SetForegroundColour((119,118,114))
-                 self.list_ctrl.Update()
-                 self.ComboEstagios.Update()
-                 self.Bind(wx.EVT_COMBOBOX, self.EstagioVisualizacao, self.ComboEstagios)
-                 self.Bind(wx.EVT_BUTTON, self.exc, self.Excluir)
-
-                 index = 0
-
-                 for row in rows:
-                     self.list_ctrl.InsertItem(index, row[0])
-                     self.list_ctrl.SetItem(index, 1, row[1])
-                     index += 1
-             except:
-                 pass
-
-             dlg.Destroy()
-         else:
-             dlg.Destroy()
 
 #---------------------------------------------------------------------------------------------------------------------------------
-     def edt(self, event):
+     def ColetaDados(self, event):
          id = self.id
-         quant_estagios = len(bancodedados.ComboEstagios(id))
-         id_Estagio = self.ComboEstagios.GetValue()
-         id_Estagio = int(re.sub('[^0-9]', '', id_Estagio))
-         self.id_EstagioEDT = id_Estagio
-
-         list_estagios = bancodedados.ComboEstagios(id)
-         rows = bancodedados.TabelaEstagio(id, id_Estagio)
-         pre = bancodedados.Pressao(id, id_Estagio)
-
-         self.pressaoA.Destroy()
-         self.list_ctrl.Destroy()
-         self.ComboEstagios.Destroy()
-         self.Excluir.Destroy()
-         self.Editar.Destroy()
-         self.ComboEstagios = wx.TextCtrl(self, -1, list_estagios[id_Estagio-1], (20,50),(220,-1), wx.TE_READONLY | wx.TE_LEFT)
-         self.pressaoA = wx.TextCtrl(self, -1, pre[0], (380,90),(90,-1), wx.TE_RIGHT)
-         self.Excluir = wx.Button(self, -1, 'Excluir', (380, 140), (90,-1), wx.ALIGN_LEFT)
-         self.Editar = wx.Button(self, -1, 'Editar', (380, 175), (90,-1), wx.ALIGN_LEFT)
-         self.list_ctrl = EditableListCtrl(self, size = (220,400), pos = (20,90), style = wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
-         self.list_ctrl.InsertColumn(0, "Tempo (s)", width=100)
-         self.list_ctrl.InsertColumn(1, "Altura (mm)", width=110)
-         self.Excluir.SetForegroundColour((119,118,114))
-         self.Editar.SetForegroundColour((119,118,114))
-         self.Coletar.SetForegroundColour((119,118,114))
-         self.Salvar.SetForegroundColour((0,0,0))
-         self.pressaoA.SetForegroundColour((0,0,0))
-         self.texto01.SetForegroundColour((0,0,0))
-         self.Refresh()
-         self.Update()
-         self.Bind(wx.EVT_BUTTON, self.save, self.Salvar)
-
-         index = 0
-
-         for row in rows:
-             self.list_ctrl.InsertItem(index, row[0])
-             self.list_ctrl.SetItem(index, 1, row[1])
-             index += 1
-
+         con = Coleta02(id)
+         resultado = con.ShowModal()
 #---------------------------------------------------------------------------------------------------------------------------------
-     def save(self, event):
-         id_Estagio = self.id_EstagioEDT
-         id = self.id
-         tamanho = self.list_ctrl.GetItemCount()
-
-         pressao = self.pressaoA.GetValue()
-         pressao = format(pressao).replace(',','.')
-
-         try:
-             pressao = float(pressao)
-         except ValueError:
-             pressao = -1
-
-         if pressao != '' and pressao > 0:
-             '''Diálogo se deseja realmente excluir o Estágio'''
-             dlg = wx.MessageDialog(None, 'Deseja mesmo alterar os dados referente a esse Estágio?', 'EAU', wx.YES_NO | wx .CENTRE)
-             result = dlg.ShowModal()
-
-             if result == wx.ID_YES:
-                bancodedados.updateAdadosDEL(id, id_Estagio)
-                bancodedados.updateAdadosPressao(id, id_Estagio, pressao)
-                indice = 0
-
-                while True:
-                    tempo = self.list_ctrl.GetItemText(indice, 0)
-                    altura = self.list_ctrl.GetItemText(indice, 1)
-                    tempo = float(format(tempo).replace(',','.'))
-                    altura = float(format(altura).replace(',','.'))
-                    bancodedados.updateAdados(id, id_Estagio, tempo, altura)
-                    indice = indice + 1
-                    if indice == tamanho:
-                        break
-
-             dlg.Destroy()
-
-         else:
-             print('O valor de pressao aplicada nao e adequado')
-             menssagError = wx.MessageDialog(self, 'O valor para pressão aplicada não é adequado', 'EAU', wx.OK | wx.ICON_INFORMATION)
-             aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
-             menssagError.ShowModal()
-             menssagError.Destroy()
-
-
+#---------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 class Page03(wx.Panel):
 
 #---------------------------------------------------------------------------------------------------------------------------------

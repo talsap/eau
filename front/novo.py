@@ -4,6 +4,7 @@
 
 import wx
 import wx.adv
+import bancodedados
 from novoensaio import TelaNovoEnsaio
 
 ##################################################################################################################################
@@ -64,12 +65,20 @@ class TelaNovo(wx.Dialog):
                 menssagError.Destroy()
                 d = -1
 
-        #---------------------------------------------------------------
+#---------------------------------------------------------------
+            self.identificadorCadastrados = bancodedados.ler_IDE()
 
             if d<0 or d>=0 or d == '':
-                self.Close(True)
-                con = TelaNovoEnsaio(a, b, c, d, e)
-                resultado = con.ShowModal()
+                if e in self.identificadorCadastrados:
+                    print('Ja existe esse identificador')
+                    menssagError = wx.MessageDialog(self, 'Já existe um ensaio com esse identificador', 'EAU', wx.OK|wx.ICON_INFORMATION)
+                    aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+                    menssagError.ShowModal()
+                    menssagError.Destroy()
+                else:
+                    self.Close(True)
+                    con = TelaNovoEnsaio(a, b, c, d, e)
+                    resultado = con.ShowModal()
 
             else:
                 print('Algum dos campos esta digitado errado')

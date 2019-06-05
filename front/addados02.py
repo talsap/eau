@@ -19,11 +19,13 @@ class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
 
 ##################################################################################################################################
 '''Tela Cadastrar Cápsula'''
-class AddDados(wx.Dialog):
+class AddDados02(wx.Dialog):
 
 #----------------------------------------------------------------------
-        def __init__(self, *args, **kwargs):
+        def __init__(self, id, id_Estagio, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Beta')
+            self.id = id
+            self.id_Estagio = id_Estagio
 
             self.panel = wx.Panel(self)
             self.SetSize((240,390))
@@ -62,14 +64,17 @@ class AddDados(wx.Dialog):
             self.Bind(wx.EVT_BUTTON, self.Confirmar, self.confirmar)
 #----------------------------------------------------------------------
         def Confirmar(self, event):
+            id = self.id
+            id_Estagio = self.id_Estagio
+
             indice = 0
-            bancodedados.InserirStatuStagio()
+            bancodedados.InserirStatuStagio_id(id, id_Estagio)
             while True:
                 tempo = self.list_ctrl.GetItemText(indice, 0)
                 altura = self.list_ctrl.GetItemText(indice, 1)
                 tempo = float(format(tempo).replace(',','.'))
                 altura = float(format(altura).replace(',','.'))
-                bancodedados.InserirDados(tempo, altura)
+                bancodedados.InserirDados_id(id, id_Estagio, tempo, altura)
                 indice = indice + 1
                 if indice == 14:
                     break
