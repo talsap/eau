@@ -23,7 +23,7 @@ class AddDados(wx.Dialog):
 
 #----------------------------------------------------------------------
         def __init__(self, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU - Beta')
+            wx.Dialog.__init__(self, None, -1, 'EAU - Beta', style = wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
 
             self.panel = wx.Panel(self)
             self.SetSize((240,390))

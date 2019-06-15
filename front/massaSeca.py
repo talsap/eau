@@ -13,15 +13,14 @@ import bancodedados
 class massaSeca(wx.Dialog):
 
 #----------------------------------------------------------------------
-        def __init__(self, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU')
-
+        def __init__(self, id, *args, **kwargs):
+            wx.Dialog.__init__(self, None, -1, 'EAU', style = wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
+            self.id = id
             self.panel = wx.Panel(self)
             self.SetSize((400,200))
             self.Centre()
             self.Show()
 
-            id = bancodedados.ler_quant_ensaios()
             capsulas = bancodedados.caps(id)
             self.FontTitle =wx.Font(10, wx.SWISS, wx.NORMAL, wx.NORMAL)
             self.title = wx.StaticText(self.panel, -1, 'ADICIONE O VALORES PARA MASSA SECA', (20,20), (370,-1), wx.ALIGN_CENTER)
@@ -42,6 +41,7 @@ class massaSeca(wx.Dialog):
 
 #----------------------------------------------------------------------
         def salvarMassaS(self, event):
+            id = self.id
             m = self.massaSeca01.GetValue()
             m = format(m).replace(',','.')
             n = self.massaSeca02.GetValue()
@@ -64,7 +64,6 @@ class massaSeca(wx.Dialog):
 
             if m>0 and n>0 and o>0:
                 if m!= '' and n!= '' and o!= '':
-                    id = bancodedados.ler_quant_ensaios()
                     bancodedados.UpdateMassaSeca(id, m, n, o)
                     self.Close(True)
                 else:

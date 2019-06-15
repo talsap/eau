@@ -413,6 +413,17 @@ def ler_DO_IDE(id):
 
     return lista_IDE
 
+'''Função que Retorna o id para um novo ensaio'''
+def idReturn():
+    id = []
+    for row in c.execute('SELECT max(id) FROM dadosIniciais'):
+        row = format(row).replace('(','')
+        row = format(row).replace(')','')
+        row = format(row).replace(',','')
+        id.append(int(row))
+
+    return id[0]
+
 '''Ver os identificadores de ensaio já cadastrados no banco'''
 def ler_IDE():
     lista_IDE = []

@@ -3,10 +3,13 @@
 '''Bibliotecas'''
 
 import wx
+import sys
+import tela
+import math
+import bancodedados
 from addados import AddDados
 from massaSeca import massaSeca
-import bancodedados
-import math
+
 
 pi = math.pi
 ##################################################################################################################################
@@ -17,10 +20,11 @@ pi = math.pi
 class Coleta(wx.Dialog):
 
 #----------------------------------------------------------------------
-        def __init__(self, y, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION)
+        def __init__(self, id, y, *args, **kwargs):
+            wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX)
 
             '''y corresponde sobre o status do preenchimento da massa seca'''
+            self.id = id
             self.y = y
 
             self.panel = wx.Panel(self)
@@ -51,6 +55,7 @@ class Coleta(wx.Dialog):
         def Iniciar(self, event):
             pressaoSeguinte = self.pressaoAplicada.GetValue()
             pressaoSeguinte = format(pressaoSeguinte ).replace(',','.')
+            id = self.id
 
             try:
                 pressaoSeguinte = float(pressaoSeguinte)
@@ -63,7 +68,7 @@ class Coleta(wx.Dialog):
             if pressaoSeguinte != '' and pressaoSeguinte > 0:
                 cont = self.numEstagios
                 cont = int(cont)
-                bancodedados.InserirDadosPressao(cont, pressaoSeguinte)
+                bancodedados.InserirDadosPressao_id(id, cont, pressaoSeguinte)
                 dialogo = AddDados()
                 resultado = dialogo.ShowModal()
                 cont = cont + 1
@@ -79,7 +84,7 @@ class Coleta(wx.Dialog):
                 self.title.SetFont(self.FontTitle)
 
                 if cont == 2 and y == 1:
-                    dialogo = massaSeca()
+                    dialogo = massaSeca(id)
                     resultado = dialogo.ShowModal()
 
                 massaSeguinte = self.massaAplicada.GetValue()
@@ -113,9 +118,10 @@ class Coleta(wx.Dialog):
             '''Ativar e desativar caixa de texto (Altura do corpo de Prova)'''
             a = self.massaAplicada.GetValue()
             a = format(a).replace(',','.')
+            id = self.id
 
             try:
-                d = bancodedados.diametro_anel()
+                d = bancodedados.diametro_anel_id(id)
                 a = float(a)
                 b = a*9.81*4/(pi*d*d)
                 b = format(round(b, 2))
@@ -133,9 +139,10 @@ class Coleta(wx.Dialog):
             '''Ativar e desativar caixa de texto (Altura do corpo de Prova)'''
             a = self.pressaoAplicada.GetValue()
             a = format(a).replace(',','.')
+            id = self.id
 
             try:
-                d = bancodedados.diametro_anel()
+                d = bancodedados.diametro_anel_id(id)
                 a = float(a)
                 b = a*d*d*pi/(9.81*4)
                 b = format(round(b, 2))
@@ -152,10 +159,14 @@ class Coleta(wx.Dialog):
             '''Diálogo se deseja realmente sair'''
             dlg = wx.MessageDialog(None, 'Deseja mesmo finalizar o ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
             result = dlg.ShowModal()
+            id = self.id
 
             if result == wx.ID_YES:
-                bancodedados.data_termino_Update()
+                bancodedados.data_termino_Update_id(id)
                 self.Close(True)
+                a = wx.Window.FindWindowByName('Facade', parent = None)
+                a.list_ctrl.UpdateListCtrl()
+
             else:
                 dlg.Destroy()
 

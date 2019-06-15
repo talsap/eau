@@ -19,15 +19,63 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
         def __init__(self, parent, ID=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
             ULC.UltimateListCtrl.__init__(self, parent, ID, pos, size, agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES | ULC.ULC_NO_HIGHLIGHT)
 
+        def UpdateListCtrl(self):
+            self.DeleteAllItems()
+            lista = bancodedados.ListaVisualizacao()
+            index = 0
+
+            for key, row in lista:
+                   pos = self.InsertStringItem(index, row[0])
+                   self.SetStringItem(index, 1, row[1])
+                   self.SetStringItem(index, 2, row[2])
+                   self.SetStringItem(index, 3, row[3])
+                   buttonEDT = wx.Button(self, id = key, label="")
+                   buttonGRF = wx.Button(self, id = 4000+key, label="")
+                   buttonPDF = wx.Button(self, id = 10000+key, label="")
+                   buttonCSV = wx.Button(self, id = 15000+key, label="")
+                   buttonDEL = wx.Button(self, id = 20000+key, label="")
+                   buttonEDT.SetBitmap(wx.Bitmap('icons\icons-editar-arquivo-24px.png'))
+                   buttonGRF.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
+                   buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
+                   buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
+                   buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
+                   self.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
+                   self.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
+                   self.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
+                   self.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
+                   self.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
+                   self.SetItemData(index, key)
+                   index += 1
+
+            if len(lista) >=8:
+               self.SetColumnWidth(0, width=115)
+               self.SetColumnWidth(1, width=115)
+               self.SetColumnWidth(2, width=135)
+               self.SetColumnWidth(3, width=70)
+               self.SetColumnWidth(4, width=40)
+               self.SetColumnWidth(5, width=40)
+               self.SetColumnWidth(6, width=40)
+               self.SetColumnWidth(7, width=40)
+               self.SetColumnWidth(8, width=40)
+            else:
+               self.SetColumnWidth(0, width=125)
+               self.SetColumnWidth(1, width=120)
+               self.SetColumnWidth(2, width=135)
+               self.SetColumnWidth(3, width=70)
+               self.SetColumnWidth(4, width=40)
+               self.SetColumnWidth(5, width=40)
+               self.SetColumnWidth(6, width=40)
+               self.SetColumnWidth(7, width=40)
+               self.SetColumnWidth(8, width=40)
+
 ##################################################################################################################################
 '''Tela Inicial'''
 class Tela(wx.Frame):
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def __init__(self, *args, **kwargs):
-         super(Tela, self).__init__(title = 'EAU - Beta' ,style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION, *args, **kwargs)
-
-         self.basic_gui()
+         super(Tela, self).__init__(title = 'EAU - Beta', name = 'Facade', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION, *args, **kwargs)
+         frame = self.basic_gui()
 
      def basic_gui(self):
          self.panel = wx.Panel(self)
@@ -128,59 +176,8 @@ class Tela(wx.Frame):
          id = event.GetId()
          dialogo = Editar(id)
          resultado = dialogo.ShowModal()
-         self.list_ctrl.DeleteAllItems()
-         lista = bancodedados.ListaVisualizacao()
-         index = 0
+         self.list_ctrl.UpdateListCtrl()
 
-         for key, row in lista:
-                pos = self.list_ctrl.InsertStringItem(index, row[0])
-                self.list_ctrl.SetStringItem(index, 1, row[1])
-                self.list_ctrl.SetStringItem(index, 2, row[2])
-                self.list_ctrl.SetStringItem(index, 3, row[3])
-                buttonEDT = wx.Button(self.list_ctrl, id = key, label="")
-                buttonGRF = wx.Button(self.list_ctrl, id = 4000+key, label="")
-                buttonPDF = wx.Button(self.list_ctrl, id = 10000+key, label="")
-                buttonCSV = wx.Button(self.list_ctrl, id = 15000+key, label="")
-                buttonDEL = wx.Button(self.list_ctrl, id = 20000+key, label="")
-                buttonEDT.SetBitmap(wx.Bitmap('icons\icons-editar-arquivo-24px.png'))
-                buttonGRF.SetBitmap(wx.Bitmap('icons\icons-grafico-24px.png'))
-                buttonPDF.SetBitmap(wx.Bitmap('icons\icons-exportar-pdf-24px.png'))
-                buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
-                buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
-                self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
-                self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
-                self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
-                self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
-                self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
-                self.Bind(wx.EVT_BUTTON, self.exportCSV, buttonCSV)
-                self.Bind(wx.EVT_BUTTON, self.Deletar, buttonDEL)
-                self.list_ctrl.SetItemData(index, key)
-                index += 1
-
-         if len(lista) >=8:
-            self.list_ctrl.SetColumnWidth(0, width=115)
-            self.list_ctrl.SetColumnWidth(1, width=115)
-            self.list_ctrl.SetColumnWidth(2, width=135)
-            self.list_ctrl.SetColumnWidth(3, width=70)
-            self.list_ctrl.SetColumnWidth(4, width=40)
-            self.list_ctrl.SetColumnWidth(5, width=40)
-            self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
-         else:
-            self.list_ctrl.SetColumnWidth(0, width=125)
-            self.list_ctrl.SetColumnWidth(1, width=120)
-            self.list_ctrl.SetColumnWidth(2, width=135)
-            self.list_ctrl.SetColumnWidth(3, width=70)
-            self.list_ctrl.SetColumnWidth(4, width=40)
-            self.list_ctrl.SetColumnWidth(5, width=40)
-            self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
-            
 #---------------------------------------------------------------------------------------------------------------------------------
      def Graficos(self, event):
          id = event.GetId()
@@ -208,7 +205,7 @@ class Tela(wx.Frame):
          id = id - 20000
 
          '''Diálogo se deseja realmente excluir o Ensaio'''
-         dlg = wx.MessageDialog(None, 'Deseja mesmo excluir esse Ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
+         dlg = wx.MessageDialog(None, 'Deseja mesmo excluir esse Ensaio?', 'EAU', wx.YES_NO | wx.CENTRE| wx.NO_DEFAULT )
          result = dlg.ShowModal()
 
          if result == wx.ID_YES:
@@ -270,12 +267,13 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(7, width=40)
             self.list_ctrl.SetColumnWidth(8, width=40)
 
+
 #---------------------------------------------------------------------------------------------------------------------------------
      def NovoEnsaio(self, event):
          quant = bancodedados.quant_ensaios_deletados()
          valor_Logico = bancodedados.ler_quant_ensaios() - 1 - quant
-         dialogo = TelaNovo()
-         resultado = dialogo.ShowModal()
+         frame = TelaNovo()
+         resultado = frame.ShowModal()
 
          lista = bancodedados.ListaVisualizacao()
          index = bancodedados.ler_quant_ensaios() - 1 - quant
@@ -337,6 +335,11 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(6, width=40)
             self.list_ctrl.SetColumnWidth(7, width=40)
             self.list_ctrl.SetColumnWidth(8, width=40)
+
+
+#---------------------------------------------------------------------------------------------------------------------------------
+     def OnCloseFrame(self, event):
+         print("OLA!111")
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def ajudaGUI(self, event):

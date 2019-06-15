@@ -5,12 +5,12 @@
 import sys
 import wx
 
-from front.tela import Tela
+import front.tela as tela
 
 '''Inicializacao do programa'''
-def main():
+class main():
      app = wx.App()
-     Tela(None)
+     tela.Tela(None)
      app.MainLoop()
 
 main()

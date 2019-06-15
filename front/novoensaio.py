@@ -16,7 +16,7 @@ class TelaNovoEnsaio(wx.Dialog):
 
 #---------------------------------------------------------------------------------------------------------------------------------
         def __init__(self, date, local, operador, profundidade, IDE_E, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio')
+            wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
 
             self.date = date
             self.local = local
@@ -251,16 +251,18 @@ class TelaNovoEnsaio(wx.Dialog):
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
-                                con = Coleta(y)
-                                resultado = con.ShowModal()
+                                idR = bancodedados.idReturn()
+                                con = Coleta(idR, y)
+                                resultado = con.Show()
                             if x == 1 and y == 0 and m>0 and n>0 and o>0:
                                 f = ''
                                 bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
-                                con = Coleta(y)
-                                resultado = con.ShowModal()
+                                idR = bancodedados.idReturn()
+                                con = Coleta(idR, y)
+                                resultado = con.Show()
                             if x == 0 and y == 1 and f>0:
                                 m = ''
                                 n = ''
@@ -269,15 +271,17 @@ class TelaNovoEnsaio(wx.Dialog):
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
-                                con = Coleta(y)
-                                resultado = con.ShowModal()
+                                idR = bancodedados.idReturn()
+                                con = Coleta(idR, y)
+                                resultado = con.Show()
                             if x == 0 and y == 0 and f>0 and m>0 and n>0 and o>0:
                                 bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
                                 self.Close(True)
-                                con = Coleta(y)
-                                resultado = con.ShowModal()
+                                idR = bancodedados.idReturn()
+                                con = Coleta(idR, y)
+                                resultado = con.Show()
 
                         else:
                             print('O nome de uma das capsulas ou nao esta cadastrada ou nao foi informada ou e identica a outra')

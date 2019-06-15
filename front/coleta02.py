@@ -18,7 +18,7 @@ class Coleta02(wx.Dialog):
 
 #----------------------------------------------------------------------
         def __init__(self, id, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX)
+            wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLOSE_BOX)
 
             '''id do ensaio ao qual será realizado a coleta de dados'''
             self.id = id

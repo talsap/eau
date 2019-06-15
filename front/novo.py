@@ -16,7 +16,7 @@ class TelaNovo(wx.Dialog):
 
 #---------------------------------------------------------------------------------------------------------------------------------
         def __init__(self, *args, **kwargs):
-            wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio')
+            wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
 
             self.panel = wx.Panel(self)
             self.SetSize((450,300))
