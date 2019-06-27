@@ -4,6 +4,9 @@
 import sqlite3
 import time
 import datetime
+import math
+
+pi = math.pi
 
 connection = sqlite3.connect('banco.db')
 c = connection.cursor()
@@ -43,6 +46,90 @@ def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massa
     c.execute("UPDATE umidadeInicial SET massaUmida02 = ? WHERE id = ?", (mu2, id,))
     c.execute("UPDATE umidadeInicial SET massaUmida03 = ? WHERE id = ?", (mu3, id,))
     connection.commit()
+
+'''Retorna com a Massa Especifica dos Grãos do Solo'''
+def AlturaInicialCP(id):
+    altura = []
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        altura.append(row[7 ])
+
+    return altura[0]
+
+'''Retorna com a Massa Especifica dos Grãos do Solo'''
+def massaEspecificaGraos(id):
+    massaEspecifica = []
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        massaEspecifica.append(row[8])
+
+    return massaEspecifica[0]
+
+'''Retorna com o cálculo da Massa Especifica Aparente Umida Inicial'''
+def massaEspecificaAparenteUmidaInicial(id):
+    volume = volumeCorpoProva(id)
+    massaAnel = []
+    massaConj = []
+
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        massaAnel.append(row[4])
+        massaConj.append(row[6])
+
+    massaCP = massaConj[0] - massaAnel[0]
+    massaEspecifica = massaCP/volume
+
+    return massaEspecifica
+
+'''Retorna com o cálculo do volume inicial do corpo de prova'''
+def volumeCorpoProva(id):
+    diametro = []
+    altura_cp = []
+
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        diametro.append(row[3])
+        altura_cp.append(row[7])
+
+    volume = (pi/4)*(diametro[0]**2)*altura_cp[0]
+
+    return volume
+
+'''Retorna com o cálculo do teor de umidade inicial'''
+def teorUmidadeInicial(id):
+    list_caps = caps(id)
+    massaCap1 = []
+    massaCap2 = []
+    massaCap3 = []
+    massaW1 = []
+    massaW2 = []
+    massaW3 = []
+    massaS1 = []
+    massaS2 = []
+    massaS3 = []
+
+    for row in c.execute('SELECT * FROM umidadeInicial WHERE id = ?', (id,)):
+        massaS1.append(row[4])
+        massaS2.append(row[5])
+        massaS3.append(row[6])
+        massaW1.append(row[7])
+        massaW2.append(row[8])
+        massaW3.append(row[9])
+
+    for row in c.execute('SELECT massa FROM capsulas WHERE capsula = ?', (list_caps[0],)):
+        massaCap1.append(row[0])
+
+    for row in c.execute('SELECT massa FROM capsulas WHERE capsula = ?', (list_caps[1],)):
+        massaCap2.append(row[0])
+
+    for row in c.execute('SELECT massa FROM capsulas WHERE capsula = ?', (list_caps[2],)):
+        massaCap3.append(row[0])
+
+    try:
+        teor_umidade1 = (massaW1[0] - massaS1[0])/(massaS1[0] - massaCap1[0])
+        teor_umidade2 = (massaW2[0] - massaS2[0])/(massaS2[0] - massaCap2[0])
+        teor_umidade3 = (massaW3[0] - massaS3[0])/(massaS3[0] - massaCap3[0])
+        teor_umidade =  (teor_umidade1 + teor_umidade2 + teor_umidade3)/3
+    except:
+        teor_umidade = ''
+
+    return teor_umidade
 
 '''Retorna com os Pressões aplicas em cada Estágio'''
 def Pressao(id, id_Estagio):
@@ -186,6 +273,19 @@ def mUmida(id):
 
     return massaUmida
 
+'''Cria uma Lista Index de visualização das Capsulas Cadastrdas'''
+def ListaVisualizacaoCap():
+    a = idsCap()
+    b = juncaoListaCap()
+    cont = 0
+    id = len(a) - 1
+    c = []
+    while cont <= id:
+        c.append(a[cont] + b[cont])
+        cont = cont +1
+
+    return c
+
 '''Cria uma Lista Index de visualização e indentificaçãoptimize'''
 def ListaVisualizacao():
     a = ids()
@@ -198,6 +298,25 @@ def ListaVisualizacao():
         cont = cont +1
 
     return c
+
+'''Junta as listas para visualização das Capsulas'''
+def juncaoListaCap():
+    a = NomeCap()
+    b = massaCap()
+    d = []
+    cont = 0
+    id = len(a) - 1
+    e = ['']
+    f = ['']
+    while cont <= id:
+        try:
+            d.append([a[cont] + b[cont]])
+            cont = cont +1
+        except IndexError:
+            d.append([e + f])
+            cont = cont +1
+
+    return d
 
 '''Junta as listas para visualização'''
 def juncaoLista():
@@ -220,6 +339,15 @@ def juncaoLista():
             cont = cont +1
 
     return d
+
+'''Lista com os ids das Capsulas cadastradas'''
+def idsCap():
+    lista_id = []
+
+    for row in c.execute('SELECT * FROM capsulas ORDER BY capsula ASC'):
+        lista_id.append([row[0]])
+
+    return lista_id
 
 '''Lista com os ids'''
 def ids():
@@ -247,6 +375,24 @@ def IDE():
         list_IDE.append([row[13]])
 
     return list_IDE
+
+'''Captura as massas das capsulas cadastradas'''
+def massaCap():
+    list_massa = []
+
+    for row in c.execute('SELECT * FROM capsulas ORDER BY capsula ASC'):
+        list_massa.append([str(row[2])])
+
+    return list_massa
+
+'''Captura os nomes das capsulas cadastradas'''
+def NomeCap():
+    list_nomeCap = []
+
+    for row in c.execute('SELECT * FROM capsulas ORDER BY capsula ASC'):
+        list_nomeCap.append([row[1]])
+
+    return list_nomeCap
 
 '''Captura as datas iniciais dos ensaios para criar uma lista para visualização'''
 def dataInicial():
@@ -332,6 +478,15 @@ def InserirDados(a, b):
     c.execute("INSERT INTO coletaDados (id, id_Estagio, tempo, raizdotempo, altura) VALUES (?, ?, ?, ?, ?)", (id, id_Estagio, a, raizdotempo, b))
     connection.commit()
 
+'''Seleciona as Capsulas cadastradas no Banco de dados de acordo com o id'''
+def capsulas_id(id):
+    lista = []
+    for rows in c.execute('SELECT * FROM capsulas WHERE id = ?', (id,)):
+        lista.append(rows[1])
+        lista.append(str(rows[2]))
+
+    return lista
+
 '''Seleciona o diametro correspondente no banco de dados de acordo com o id'''
 def diametro_anel_id(id):
     for rows in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
@@ -394,6 +549,16 @@ def ler_ID_ensaios_deletados():
 
     return identificador
 
+'''Ver a quantidade de capsulas que tem no banco de dados'''
+def ler_quant_cap():
+    for rows in c.execute('SELECT * FROM capsulas'):
+        identificador  = rows[0]
+
+    try:
+        return identificador
+    except UnboundLocalError:
+        return 0
+
 '''Ver a quantidade de ensaios que tem no banco para criar os ids'''
 def ler_quant_ensaios():
     for rows in c.execute('SELECT * FROM dadosIniciais'):
@@ -441,6 +606,12 @@ def ler_cap():
 
     return lista_capsulas
 
+'''Atualiza uma capsula no banco'''
+def update_capsulas(id, a, b):
+    c.execute("UPDATE capsulas SET capsula = ? WHERE id = ?", (a, id,))
+    c.execute("UPDATE capsulas SET massa = ? WHERE id = ?", (b, id,))
+    connection.commit()
+
 '''Cadastra uma capsula no banco'''
 def data_entry_cap(a, b):
     c.execute("INSERT INTO capsulas (id, capsula, massa) VALUES (NULL, ?, ?)", (a, b))
@@ -476,6 +647,12 @@ def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp
 def data_entry_umidade(cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03):
     id = ler_quant_ensaios()
     c.execute("INSERT INTO umidadeInicial (id, cap01, cap02, cap03, massaSeca01, massaSeca02, massaSeca03, massaUmida01, massaUmida02, massaUmida03) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03))
+    connection.commit()
+
+
+'''Deleta uma Cápsula no banco de dados de acordo com o id'''
+def deleteCap(id):
+    c.execute("DELETE FROM capsulas WHERE id = ?", (id,))
     connection.commit()
 
 '''Deleta o ensaio no banco de dados'''

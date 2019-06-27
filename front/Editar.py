@@ -90,7 +90,7 @@ class Page01(wx.Panel):
          self.texto10 = wx.StaticText(self, -1, 'Massa do Anel (g)',(293,280), (100,-1), wx.ALIGN_LEFT)
          self.texto11 = wx.StaticText(self, -1, 'DADOS DO CORPO-DE-PROVA:',(20,310), (170,-1), wx.ALIGN_LEFT)
          self.alturaCP = wx.TextCtrl(self, -1, dadosIniciais[4], (395,320),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
-         self.texto12 = wx.StaticText(self, -1, 'Altura do corpo-de-prova (mm)',(220,2325), (170,-1), wx.ALIGN_LEFT)
+         self.texto12 = wx.StaticText(self, -1, 'Altura do corpo-de-prova (mm)',(220,325), (170,-1), wx.ALIGN_LEFT)
          self.massaCP = wx.TextCtrl(self, -1, dadosIniciais[6], (395,350),(70,-1), wx.TE_READONLY | wx.TE_RIGHT)
          self.texto13 = wx.StaticText(self, -1, 'Massa do corpo-de-prova (g)',(233,355), (155,-1), wx.ALIGN_LEFT)
          self.massaEspecifica = wx.TextCtrl(self, -1, dadosIniciais[5], (395,380),(70,-1),  wx.TE_READONLY | wx.TE_RIGHT)
