@@ -22,7 +22,7 @@ class edtCapsula(wx.Dialog):
             self.Show()
 
             lista = bancodedados.capsulas_id(id)
-            self.nomeCap = wx.TextCtrl(self.panel, -1, lista[0], (60,20), (120,-1), wx.TE_RIGHT)
+            self.nomeCap = wx.TextCtrl(self.panel, -1, lista[0], (60,20), (120,-1), wx.TE_RIGHT|wx.TE_READONLY)
             self.text1 = wx.StaticText(self.panel, -1, 'Nome:', (15,25), (35,-1), wx.ALIGN_LEFT)
             self.massaCap = wx.TextCtrl(self.panel, -1, lista[1], (105,60), (75,-1), wx.TE_RIGHT)
             self.text2 = wx.StaticText(self.panel, -1, 'Massa (g):', (45,65), (60,-1), wx.ALIGN_LEFT)
@@ -38,7 +38,7 @@ class edtCapsula(wx.Dialog):
             lista = bancodedados.capsulas_id(id)
             condicao = 1
 
-            if lista[0] == a and lista[1] == b:
+            if lista[0] == a:
                 condicao = 0
 
             try:

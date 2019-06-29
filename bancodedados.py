@@ -47,13 +47,130 @@ def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massa
     c.execute("UPDATE umidadeInicial SET massaUmida03 = ? WHERE id = ?", (mu3, id,))
     connection.commit()
 
-'''Retorna com a Massa Especifica dos Grãos do Solo'''
+
+'''Cria uma Lista com todos os Status de cada Estágio'''
+def ListStatursEstagio(id):
+    lista = []
+    for row in c.execute('SELECT * FROM pressaoAplicada WHERE id = ?', (id,)):
+        lista.append(row[3])
+
+    return lista
+
+'''Cria uma Lista Index de visualização dos dados Calculados'''
+def JuncaoListaCalculados(id):
+    a = ComboEstagios(id)
+    b = P_Aplicadas(id)
+    c = e_finalEstagio(id)
+    cont = 0
+    cond = len(a) - 1
+    d = []
+    while cont <= cond:
+        d.append([a[cont]] + [b[cont]] + [c[cont]])
+        cont = cont +1
+
+    return d
+
+'''Retorna com uma Lista de todas as Pressoes aplicadas no ensaio'''
+def P_Aplicadas(id):
+    lista_P = []
+    quantEstagio = ler_quant_estagios_no_ensaio(id)
+    index = 1
+
+    while index <= quantEstagio:
+        for row in c.execute('SELECT * FROM pressaoAplicada WHERE id = ? and id_Estagio = ?', (id, index,)):
+            lista_P.append(str(row[2]))
+
+        index = index+1
+
+    return lista_P
+
+'''Retorna com uma Lista de todos os índices de vazios no final de cada Estágio'''
+def e_finalEstagio(id):
+    lista_E = []
+    quantEstagio = ler_quant_estagios_no_ensaio(id)
+    AltSol = AlturaSolidos(id)
+    AltIncialCp = AlturaInicialCP(id)
+    index = 1
+    Delta = 0
+    while index <= quantEstagio:
+        for row0 in c.execute('SELECT max(tempo) FROM coletaDados WHERE id = ? and id_Estagio = ?', (id, index,)):
+            row0 = format(row0).replace('(','')
+            row0 = format(row0).replace(')','')
+            row0 = format(row0).replace(',','')
+            tempMax = float(row0)
+
+        for row1 in c.execute('SELECT min(tempo) FROM coletaDados WHERE id = ? and id_Estagio = ?', (id, index,)):
+            row1 = format(row1).replace('(','')
+            row1 = format(row1).replace(')','')
+            row1 = format(row1).replace(',','')
+            tempMin = float(row1)
+
+        for rowm in c.execute('SELECT altura FROM coletaDados WHERE id = ? and id_Estagio = ? and tempo = ?', (id, index, tempMin)):
+            rowm = format(rowm).replace('(','')
+            rowm = format(rowm).replace(')','')
+            rowm = format(rowm).replace(',','')
+            rowm = float(rowm)
+
+        for rowM in c.execute('SELECT altura FROM coletaDados WHERE id = ? and id_Estagio = ? and tempo = ?', (id, index, tempMax)):
+            rowM = format(rowM).replace('(','')
+            rowM = format(rowM).replace(')','')
+            rowM = format(rowM).replace(',','')
+            rowM = float(rowM)
+
+        Delta = Delta + rowm - rowM
+        Altura = AltIncialCp - Delta
+        e = (Altura/AltSol) - 1
+        lista_E.append(str(round(e,4)))
+
+        index = index+1
+
+    return lista_E
+
+'''Retorna com a Altura Inicial do Corpo de Prova'''
 def AlturaInicialCP(id):
     altura = []
     for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
-        altura.append(row[7 ])
+        altura.append(row[7])
 
     return altura[0]
+
+'''Retorna com a Altura dos Sólidos em milímetros'''
+def AlturaSolidos(id):
+    altCP = AlturaInicialCP(id)
+    e = indiceVaziosInicial(id)
+
+    H = (altCP)/(1+e)
+
+    return H
+
+'''Retorna com o Grau de Saturacao Inicial valor em Decimal'''
+def grauSaturacaoInicial(id):
+    teorUmidade = teorUmidadeInicial(id)
+    massaEspGraos = massaEspecificaGraos(id)
+    e = indiceVaziosInicial(id)
+    massaEspAGUA = 1.00      #valor considerado 1.00g/cm³
+
+    S = (teorUmidade*massaEspGraos)/(e*massaEspAGUA)
+
+    return S
+
+'''Retorna com o Indice de Vazios Inicial'''
+def indiceVaziosInicial(id):
+    massaEspGraos = massaEspecificaGraos(id)
+    massaAparenteSeca = massaAparenteSecaInicial(id)
+
+    e = (massaEspGraos/massaAparenteSeca) - 1
+
+    return e
+
+'''Retorna com a Massa Especifica Aparente Seca Inicial'''
+def massaAparenteSecaInicial(id):
+    massaAparenteUmida = massaEspecificaAparenteUmidaInicial(id)
+    teorInicial = 100*(teorUmidadeInicial(id))
+
+    massaAparenteSeca = (100*massaAparenteUmida)/(100 + teorInicial)
+
+    return massaAparenteSeca
 
 '''Retorna com a Massa Especifica dos Grãos do Solo'''
 def massaEspecificaGraos(id):
@@ -70,7 +187,7 @@ def massaEspecificaAparenteUmidaInicial(id):
     massaConj = []
 
     for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
-        massaAnel.append(row[4])
+        massaAnel.append(row[5])
         massaConj.append(row[6])
 
     massaCP = massaConj[0] - massaAnel[0]
@@ -78,7 +195,7 @@ def massaEspecificaAparenteUmidaInicial(id):
 
     return massaEspecifica
 
-'''Retorna com o cálculo do volume inicial do corpo de prova'''
+'''Retorna com o cálculo do volume inicial do corpo de prova em cm³'''
 def volumeCorpoProva(id):
     diametro = []
     altura_cp = []
@@ -87,7 +204,9 @@ def volumeCorpoProva(id):
         diametro.append(row[3])
         altura_cp.append(row[7])
 
-    volume = (pi/4)*(diametro[0]**2)*altura_cp[0]
+    diametro = diametro[0]/10
+    altura_cp = altura_cp[0]/10
+    volume = (pi/4)*(diametro**2)*altura_cp
 
     return volume
 
@@ -127,7 +246,7 @@ def teorUmidadeInicial(id):
         teor_umidade3 = (massaW3[0] - massaS3[0])/(massaS3[0] - massaCap3[0])
         teor_umidade =  (teor_umidade1 + teor_umidade2 + teor_umidade3)/3
     except:
-        teor_umidade = ''
+        teor_umidade = 0
 
     return teor_umidade
 
@@ -166,8 +285,6 @@ def ComboEstagios(id):
         row = format(row).replace(')','')
         row = format(row).replace(',','')
         row = int(row)
-
-
 
     while i < row:
         lista.append('Estágio '+str(i+1))

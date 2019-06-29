@@ -8,7 +8,7 @@ import wx.adv
 import bancodedados
 import datetime
 import wx.lib.mixins.listctrl  as  listmix
-from coleta02 import Coleta02
+'''from coleta02 import Coleta02'''
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -28,7 +28,6 @@ class Editar(wx.Dialog):
 #---------------------------------------------------------------------------------------------------------------------------------
      def __init__(self, id, *args, **kwargs):
          wx.Dialog.__init__(self, None, -1, 'EAU - Editar')
-
          # Aqui criamos um painel e um Notebook representado as guias
          panel = wx.Panel(self)
          nb = wx.Notebook(panel)
@@ -537,7 +536,6 @@ class Page02(wx.Panel):
          id = self.id
          print("OLA")
 
-
 #---------------------------------------------------------------------------------------------------------------------------------
      def ColetaDados(self, event):
          id = self.id
@@ -552,6 +550,65 @@ class Page03(wx.Panel):
      def __init__(self, parent, id):
          super(Page03, self).__init__(parent)
          self.id = id
+
+         parent.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED , self.UpdatePage03)
+
+#---------------------------------------------------------------------------------------------------------------------------------
+     def UpdatePage03(self, parent):
+         id = self.id
+         massaEspGra = bancodedados.massaEspecificaGraos(id)
+         massaS = bancodedados.mSeca(id)
+         a = parent.GetSelection()
+         b = bancodedados.ListStatursEstagio(id)
+         condition = 1
+         c = 1
+
+         if c in b:
+             condition = 0
+
+         if massaEspGra == '' or massaS[0] == '' or massaS[1] == '' or massaS[2] == '' or massaEspGra == 0  or massaS[0] == 0 or massaS[1] == 0 or massaS[2] == 0 or condition == 0:
+             if a==2:
+                 menssagError = wx.MessageDialog(self, 'NADA CALCULADO AINDA!\n\n Dados ainda não foram preenchidos na aba "Dados do Ensaio".\n Ou possa haver dados que estejam preenchidos de maneira incoerente.\n Ou possa haver algum estágio com coleta de dados incompleta.', 'EAU', wx.OK|wx.ICON_INFORMATION)
+                 aboutPanel = wx.TextCtrl(menssagError, -1, style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
+                 menssagError.ShowModal()
+                 menssagError.Destroy()
+
+         else:
+              try:
+                 Hs = bancodedados.AlturaSolidos(id)
+                 eI = bancodedados.indiceVaziosInicial(id)
+                 saturacaoIni = bancodedados.grauSaturacaoInicial(id)
+                 rows = bancodedados.JuncaoListaCalculados(id)
+              except:
+                  raise
+
+              self.FontTitle =wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
+              self.title = wx.StaticText(self, -1, 'DADOS CALCULADOS', (20,20), (460,-1), wx.ALIGN_CENTER)
+              self.title.SetFont(self.FontTitle)
+              self.AltSolidos = wx.TextCtrl(self, -1, str(round(Hs,3)), (20,70),(122,-1), wx.TE_READONLY | wx.TE_LEFT)
+              self.indiceVaziosI = wx.TextCtrl(self, -1, str(round(eI,3)), (190,70),(120,-1), wx.TE_READONLY | wx.TE_CENTER)
+              self.saturacaoIni = wx.TextCtrl(self, -1, str(round(saturacaoIni,4)*100), (360,70),(110,-1), wx.TE_READONLY | wx.TE_RIGHT)
+
+              self.text01 = wx.StaticText(self, -1, "Altura dos sólidos (cm)", (20,50), (180,-1), wx.ALIGN_LEFT)
+              self.text02 = wx.StaticText(self, -1, "Índice de Vazios Inicial", (191,50), (160,-1), wx.ALIGN_LEFT)
+              self.text03 = wx.StaticText(self, -1, "Saturacão Inicial (%)", (338,50), (130,-1), wx.ALIGN_RIGHT)
+
+              self.list_ctrl = wx.ListCtrl(self, size = (315, 430), pos = (20,120), style = wx.LC_REPORT | wx.BORDER_SUNKEN | wx.LC_HRULES | wx.LC_VRULES)
+              self.list_ctrl.InsertColumn(0, "Estágios", wx.LIST_FORMAT_CENTRE, width=80)
+              self.list_ctrl.InsertColumn(1, "Pressão (kPa)", wx.LIST_FORMAT_CENTRE, width=110)
+              self.list_ctrl.InsertColumn(2, "Índices de Vazios", wx.LIST_FORMAT_CENTRE, width=120)
+
+              self.list_ctrl.SetForegroundColour((119,118,114))
+              self.AltSolidos.SetForegroundColour((119,118,114))
+              self.indiceVaziosI.SetForegroundColour((119,118,114))
+              self.saturacaoIni.SetForegroundColour((119,118,114))
+
+              index = 0
+              for row in rows:
+                  self.list_ctrl.InsertItem(index, row[0])
+                  self.list_ctrl.SetItem(index, 1, row[1])
+                  self.list_ctrl.SetItem(index, 2, row[2])
+                  index += 1
 
 ##################################################################################################################################
 ##################################################################################################################################
