@@ -24,20 +24,14 @@ pi = math.pi
 ##################################################################################################################################
 ##################################################################################################################################
 ##################################################################################################################################
-'''Tela Cadastrar Cápsula'''
-class Coleta(wx.Dialog):
+'''Tela Coleta03. Responsavel de Coletar Dados Para Status Estágio Incompleto. Iniciado na tela Editar'''
+class Coleta03(wx.Dialog):
 #----------------------------------------------------------------------
-        def __init__(self, id, y, Assentamento, *args, **kwargs):
+        def __init__(self, id, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX)
-            self.Assentamento = Assentamento
-            self.TARA_COLETADA = False
             '''y corresponde sobre o status do preenchimento da massa seca'''
             self.id = id
-            self.y = y
             self.condicaoConeccao = False
-            self.crono = 15   #Aqui é onde define a quantidade de tempo da contagem regressiva da pressão de adensamento (300 é o padrão, 5min)
-            self.timer = wx.Timer(self)     #Timer é referente a contagem regressiva no Pressao de Assentamento
-            self.Bind(wx.EVT_TIMER, self.update, self.timer)
 
             self.panel = wx.Panel(self)
             self.SetSize((500,425))
@@ -56,30 +50,17 @@ class Coleta(wx.Dialog):
             self.text00 = wx.StaticText(self.panel, -1, "COM Port", (350,44), (60,-1), wx.ALIGN_LEFT)
             self.numEstagios = '1'
             self.FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
-            if Assentamento == True:
-                self.title = wx.StaticText(self.panel, -1, 'Pressão de Assentamento', (20,20), (460,-1), wx.ALIGN_CENTER)
-                self.title.SetFont(self.FontTitle)
-                self.massaAplicada = wx.TextCtrl(self.panel, -1, '', (370,70),(100,-1), wx.TE_RIGHT)
-                self.Bind(wx.EVT_TEXT, self.textDinamic01, self.massaAplicada)
-                self.texto01 = wx.StaticText(self.panel, -1, 'Massa Aplicada (kg)',(258,75), (109,-1), wx.ALIGN_LEFT)
-                self.pressaoAplicada = wx.TextCtrl(self.panel, -1, '', (370,100),(100,-1), wx.TE_RIGHT)
-                self.Bind(wx.EVT_TEXT, self.textDinamic02, self.pressaoAplicada)
-                self.texto01 = wx.StaticText(self.panel, -1, 'Pressão Aplicada (kPa)',(245,105), (119,-1), wx.ALIGN_LEFT)
-                self.prompt = wx.TextCtrl(self.panel, -1, wx.EmptyString, (20, 138), wx.Size(450,200), style = wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH | wx.TE_RICH2)
-                self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(137.5, 350), (225,-1), wx.ALIGN_LEFT)
-                self.Bind(wx.EVT_BUTTON, self.Iniciar, self.iniciar)
-            else:
-                self.title = wx.StaticText(self.panel, -1, 'Estágio ' + self.numEstagios, (20,20), (460,-1), wx.ALIGN_CENTER)
-                self.title.SetFont(self.FontTitle)
-                self.massaAplicada = wx.TextCtrl(self.panel, -1, '', (370,70),(100,-1), wx.TE_RIGHT)
-                self.Bind(wx.EVT_TEXT, self.textDinamic01, self.massaAplicada)
-                self.texto01 = wx.StaticText(self.panel, -1, 'Massa Aplicada (kg)',(258,75), (109,-1), wx.ALIGN_LEFT)
-                self.pressaoAplicada = wx.TextCtrl(self.panel, -1, '', (370,100),(100,-1), wx.TE_RIGHT)
-                self.Bind(wx.EVT_TEXT, self.textDinamic02, self.pressaoAplicada)
-                self.texto01 = wx.StaticText(self.panel, -1, 'Pressão Aplicada (kPa)',(245,105), (119,-1), wx.ALIGN_LEFT)
-                self.prompt = wx.TextCtrl(self.panel, -1, wx.EmptyString, (20, 138), wx.Size(450,200), style = wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH | wx.TE_RICH2)
-                self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(137.5, 350), (225,-1), wx.ALIGN_LEFT)
-                self.Bind(wx.EVT_BUTTON, self.Iniciar, self.iniciar)
+            self.title = wx.StaticText(self.panel, -1, 'Estágio ' + self.numEstagios, (20,20), (460,-1), wx.ALIGN_CENTER)
+            self.title.SetFont(self.FontTitle)
+            self.massaAplicada = wx.TextCtrl(self.panel, -1, '', (370,70),(100,-1), wx.TE_RIGHT)
+            self.Bind(wx.EVT_TEXT, self.textDinamic01, self.massaAplicada)
+            self.texto01 = wx.StaticText(self.panel, -1, 'Massa Aplicada (kg)',(258,75), (109,-1), wx.ALIGN_LEFT)
+            self.pressaoAplicada = wx.TextCtrl(self.panel, -1, '', (370,100),(100,-1), wx.TE_RIGHT)
+            self.Bind(wx.EVT_TEXT, self.textDinamic02, self.pressaoAplicada)
+            self.texto01 = wx.StaticText(self.panel, -1, 'Pressão Aplicada (kPa)',(245,105), (119,-1), wx.ALIGN_LEFT)
+            self.prompt = wx.TextCtrl(self.panel, -1, wx.EmptyString, (20, 138), wx.Size(450,200), style = wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH | wx.TE_RICH2)
+            self.iniciar = wx.Button(self.panel, -1, 'Iniciar',(137.5, 350), (225,-1), wx.ALIGN_LEFT)
+            self.Bind(wx.EVT_BUTTON, self.Iniciar, self.iniciar)
 
             self.Refresh()
             self.Update()

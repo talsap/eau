@@ -250,19 +250,35 @@ class TelaNovoEnsaio(wx.Dialog):
                                 bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
-                                self.Close(True)
                                 idR = bancodedados.idReturn()
-                                con = Coleta(idR, y)
+                                '''Diálogo para Pressao de Assentamento'''
+                                dlg = wx.MessageDialog(None, 'Deseja Adicionar uma pressão de Assentamento?', 'EAU', wx.YES_NO | wx .CENTRE| wx.YES_DEFAULT | wx.ICON_INFORMATION)
+                                result = dlg.ShowModal()
+                                if result == wx.ID_YES:
+                                    Assentamento = True
+                                else:
+                                    Assentamento = False
+
+                                con = Coleta(idR, y, Assentamento)
                                 resultado = con.Show()
+                                self.Close(True)
                             if x == 1 and y == 0 and m>0 and n>0 and o>0:
                                 f = ''
                                 bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
-                                self.Close(True)
                                 idR = bancodedados.idReturn()
-                                con = Coleta(idR, y)
+                                '''Diálogo para Pressao de Assentamento'''
+                                dlg = wx.MessageDialog(None, 'Deseja Adicionar uma pressão de Assentamento?', style = wx.YES_NO | wx.CENTRE | wx.YES_DEFAULT | wx.ICON_INFORMATION)
+                                result = dlg.ShowModal()
+                                if result == wx.ID_YES:
+                                    Assentamento = True
+                                else:
+                                    Assentamento = False
+
+                                con = Coleta(idR, y, Assentamento)
                                 resultado = con.Show()
+                                self.Close(True)
                             if x == 0 and y == 1 and f>0:
                                 m = ''
                                 n = ''
@@ -270,19 +286,35 @@ class TelaNovoEnsaio(wx.Dialog):
                                 bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
-                                self.Close(True)
                                 idR = bancodedados.idReturn()
-                                con = Coleta(idR, y)
+                                '''Diálogo para Pressao de Assentamento'''
+                                dlg = wx.MessageDialog(None, 'Deseja Adicionar uma pressão de Assentamento?', 'EAU', wx.YES_NO | wx .CENTRE| wx.YES_DEFAULT | wx.ICON_INFORMATION)
+                                result = dlg.ShowModal()
+                                if result == wx.ID_YES:
+                                    Assentamento = True
+                                else:
+                                    Assentamento = False
+
+                                con = Coleta(idR, y, Assentamento)
                                 resultado = con.Show()
+                                self.Close(True)
                             if x == 0 and y == 0 and f>0 and m>0 and n>0 and o>0:
                                 bancodedados.data_entry_dados(a, b, c, d, e, p, f, q, r, s, t, u1)
                                 bancodedados.data_entry_umidade(g, h, i, m, n, o, j, k, l)
                                 bancodedados.data_termino()
-                                self.Close(True)
                                 idR = bancodedados.idReturn()
-                                con = Coleta(idR, y)
-                                resultado = con.Show()
 
+                                '''Diálogo para Pressao de Assentamento'''
+                                dlg = wx.MessageDialog(None, 'Deseja Adicionar uma pressão de Assentamento?', 'EAU', wx.YES_NO | wx .CENTRE| wx.YES_DEFAULT | wx.ICON_INFORMATION)
+                                result = dlg.ShowModal()
+                                if result == wx.ID_YES:
+                                    Assentamento = True
+                                else:
+                                    Assentamento = False
+
+                                con = Coleta(idR, y, Assentamento)
+                                resultado = con.Show()
+                                self.Close(True)
                         else:
                             print('O nome de uma das capsulas ou nao esta cadastrada ou nao foi informada ou e identica a outra')
                             menssagError = wx.MessageDialog(self, 'O nome de uma das cápsulas ou não está cadastrada ou não foi informada corretamente ou pode ter duas cápsulas idênticas', 'EAU', wx.OK|wx.ICON_INFORMATION)

@@ -9,6 +9,7 @@ from wx.lib.agw import ultimatelistctrl as ULC
 from novo import TelaNovo
 from capsulas import Cap
 from Editar import Editar
+from Csv import Csv
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -202,8 +203,8 @@ class Tela(wx.Frame):
      def exportCSV(self, event):
          id = event.GetId()
          id = id - 15000
-         print(id)
-         print('CSV')
+         dialogo = Csv(id)
+         '''resultado = dialogo.Show()'''
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def Deletar(self, event):

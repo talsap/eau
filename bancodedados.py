@@ -8,7 +8,7 @@ import math
 
 pi = math.pi
 
-connection = sqlite3.connect('banco.db')
+connection = sqlite3.connect('banco.db', check_same_thread = False)
 c = connection.cursor()
 
 def create_table():
@@ -19,6 +19,9 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS pressaoAplicada (id integer, id_Estagio integer, pressao_aplicada real, status_estagio integer)')
     c.execute('CREATE TABLE IF NOT EXISTS coletaDados (id integer, id_Estagio integer, tempo real, raizdotempo real, altura real)')
     c.execute('CREATE TABLE IF NOT EXISTS idDeletados (idDeletados integer)')
+    c.execute('CREATE TABLE IF NOT EXISTS dateEstagio (id integer, id_Estagio integer, dateInicio text)')
+    c.execute('CREATE TABLE IF NOT EXISTS ensaioTara (id integer, tara real)')
+    c.execute('CREATE TABLE IF NOT EXISTS pressaoAssentamento (id integer,  pressaoAssentamento real)')
 
 create_table()
 
@@ -561,7 +564,7 @@ def InserirStatuStagio():
     c.execute("UPDATE pressaoAplicada SET status_estagio = ? WHERE id = ? and id_Estagio = ?", (status, id, id_Estagio))
     connection.commit()
 
-'''Adiciona no banco os dados da pressão correspondete a cada Estágio dependendo do id'''
+'''Adiciona no banco os dados da pressão correspondete a cada Estágio dependendo do id e também o valor do status_estagio que inicialmente e zero'''
 def InserirDadosPressao_id(id, a, b):
     status = 1
     c.execute("INSERT INTO pressaoAplicada (id, id_Estagio, pressao_aplicada, status_estagio) VALUES (?, ?, ?, ?)", (id, a, b, status))
@@ -715,6 +718,14 @@ def ler_IDE():
 
     return lista_IDE
 
+'''Pega o valor de Tara do ensaio'''
+def TARA(id):
+    Tara = []
+    for row in c.execute('SELECT * FROM ensaioTara  WHERE id = ?', (id,)):
+        Tara.append(row[1])
+
+    return Tara[0]
+
 '''Ver as capsulas que já tem no banco'''
 def ler_cap():
     lista_capsulas = []
@@ -751,6 +762,22 @@ def data_termino_Update():
 def data_termino():
     date = ''
     c.execute("INSERT INTO datafinalDoEnsaio (id, datafinal) VALUES (NULL, ?)", (date,))
+    connection.commit()
+
+'''Adiciona no banco a Pressao de Assentamento Utilizada no ensaio'''
+def pAssentamento(id, Assentamento):
+    c.execute("INSERT INTO pressaoAssentamento (id, pressaoAssentamento) VALUES (?, ?)", (id, Assentamento))
+    connection.commit()
+
+'''Adiciona a TARA do transdutor no ensaio'''
+def EnsaioTara(id, Tara):
+    c.execute("INSERT INTO ensaioTara (id, tara) VALUES (?, ?)", (id, Tara))
+    connection.commit()
+
+'''Adiciona a data exata na qual o Estágio de pressão foi iniciado'''
+def dataEstagioInicio(id, id_Estagio):
+    datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M:%S  %d/%m/%Y'))
+    c.execute("INSERT INTO dateEstagio (id, id_Estagio, dateInicio) VALUES (?, ?, ?)", (id, id_Estagio, datestamp))
     connection.commit()
 
 '''Adiciona os dados iniciais do ensaio no banco'''

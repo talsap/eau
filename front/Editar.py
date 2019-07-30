@@ -8,7 +8,8 @@ import wx.adv
 import bancodedados
 import datetime
 import wx.lib.mixins.listctrl  as  listmix
-'''from coleta02 import Coleta02'''
+from coleta02 import Coleta02
+from coleta03 import Coleta03
 
 ##################################################################################################################################
 ##################################################################################################################################
@@ -49,6 +50,9 @@ class Editar(wx.Dialog):
          self.Centre()
          self.Show()
 
+     def onExit(self):
+         '''Opcao Sair'''
+         self.Close(True)
 #---------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------
@@ -436,7 +440,6 @@ class Page02(wx.Panel):
          super(Page02, self).__init__(parent)
          self.id = id
 
-
          try:
              id_Estagio = bancodedados.ler_quant_estagios_no_ensaio(id)
              list_estagios = bancodedados.ComboEstagios(id)
@@ -482,9 +485,10 @@ class Page02(wx.Panel):
                  self.list_ctrl.SetItem(index, 1, row[1])
                  index += 1
          except:
-             self.text = wx.StaticText(self, -1, "Nenhum coleta foi realizada ainda.", (0,20), (500,-1), wx.ALIGN_CENTER)
+             self.text = wx.StaticText(self, -1, "Nenhuma coleta foi realizada ainda.", (0,20), (500,-1), wx.ALIGN_CENTER)
              self.Coletar1 = wx.Button(self, -1, 'Coletar', (205, 40), (90,-1), wx.ALIGN_LEFT)
              self.Bind(wx.EVT_BUTTON, self.ColetaDados, self.Coletar1)
+
 #---------------------------------------------------------------------------------------------------------------------------------
      def EstagioVisualizacao(self, event):
          id = self.id
@@ -534,13 +538,25 @@ class Page02(wx.Panel):
 #---------------------------------------------------------------------------------------------------------------------------------
      def Coleta(self, event):
          id = self.id
-         print("OLA")
+         con = Coleta03(id)
+         resultado = con.Show()
+         self.GetTopLevelParent().Close(True)
 
 #---------------------------------------------------------------------------------------------------------------------------------
      def ColetaDados(self, event):
          id = self.id
-         con = Coleta02(id)
+         '''Diálogo para Pressao de Assentamento'''
+         dlg = wx.MessageDialog(None, 'Deseja Adicionar uma pressão de Assentamento?', style = wx.YES_NO | wx.CENTRE | wx.YES_DEFAULT | wx.ICON_INFORMATION)
+         result = dlg.ShowModal()
+         if result == wx.ID_YES:
+             Assentamento = True
+         else:
+             Assentamento = False
+
+         con = Coleta02(id, 1, Assentamento)
          resultado = con.Show()
+         self.GetTopLevelParent().Close(True)
+
 #---------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------
