@@ -9,12 +9,8 @@ from front.cadastrarcapsula2 import cadCapsula2
 from front.editarCapsula import edtCapsula
 from wx.lib.agw import ultimatelistctrl as ULC
 
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################
 '''Classe da Lista editável'''
 class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
-
     #----------------------------------------------------------------------
         def __init__(self, parent, ID=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
             ULC.UltimateListCtrl.__init__(self, parent, ID, pos, size, agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES | ULC.ULC_NO_HIGHLIGHT)
@@ -48,12 +44,9 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
                self.SetColumnWidth(2, width=40)
                self.SetColumnWidth(3, width=40)
 
-
-##################################################################################################################################
 '''Tela Capsulas'''
 class Cap(wx.Dialog):
-
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def __init__(self, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Cápsulas', style = wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
 
@@ -106,7 +99,7 @@ class Cap(wx.Dialog):
             self.SetSizer(self.vBox)
             self.list_ctrl.UpdateListCtrl()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def CadastrarCapsula(self, event):
             dialogo = cadCapsula2()
             resultado = dialogo.ShowModal()
@@ -142,14 +135,14 @@ class Cap(wx.Dialog):
                 self.list_ctrl.SetColumnWidth(2, width=40)
                 self.list_ctrl.SetColumnWidth(3, width=40)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def Editar(self, event):
             id = event.GetId()
             dialogo = edtCapsula(id)
             resultado = dialogo.ShowModal()
             self.list_ctrl.UpdateListCtrl()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def Deletar(self, event):
             id = event.GetId()
             id = id - 15000
@@ -165,7 +158,7 @@ class Cap(wx.Dialog):
             else:
                 dlg.Destroy()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def ColumAdapter(self, event):
              lista = bancodedados.ListaVisualizacaoCap()
              '''Ajusta os tamanhos das colunas ao arrastar'''
@@ -180,7 +173,7 @@ class Cap(wx.Dialog):
                 self.list_ctrl.SetColumnWidth(2, width=40)
                 self.list_ctrl.SetColumnWidth(3, width=40)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def ColumAdapter2(self, event):
             lista = bancodedados.ListaVisualizacaoCap()
             '''Ajusta os tamanhos das colunas ao clicar com botão esquerdo sobre a coluna'''
@@ -195,7 +188,7 @@ class Cap(wx.Dialog):
                 self.list_ctrl.SetColumnWidth(2, width=40)
                 self.list_ctrl.SetColumnWidth(3, width=40)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def ColumAdapter3(self, event):
             lista = bancodedados.ListaVisualizacaoCap()
             '''Ajusta os tamanhos das colunas ao clicar com o botão direito sobre a coluna'''
@@ -209,7 +202,3 @@ class Cap(wx.Dialog):
                 self.list_ctrl.SetColumnWidth(1, width=115)
                 self.list_ctrl.SetColumnWidth(2, width=40)
                 self.list_ctrl.SetColumnWidth(3, width=40)
-
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################

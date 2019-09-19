@@ -21,12 +21,9 @@ opcaoD = "D"
 opcaoI = "I"
 pi = math.pi
 
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################
 '''Tela Coleta03. Responsavel de Coletar Dados Para Status Estágio Incompleto. Iniciado na tela Editar'''
 class Coleta03(wx.Dialog):
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def __init__(self, id, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX)
             '''y corresponde sobre o status do preenchimento da massa seca'''
@@ -65,7 +62,7 @@ class Coleta03(wx.Dialog):
             self.Refresh()
             self.Update()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def ColetaPressaoAssentamento(self, event):
             id = self.id
             pressaoSeguinte = self.pressaoAplicada.GetValue()
@@ -94,7 +91,7 @@ class Coleta03(wx.Dialog):
                 menssagError.ShowModal()
                 menssagError.Destroy()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def AguardarTime(self):
             id = self.id
             self.conexao.write(opcaoI)
@@ -145,7 +142,7 @@ class Coleta03(wx.Dialog):
                     self.Bind(wx.EVT_BUTTON, self.ColetaDados, self.iniciar)
                     self.Update()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def ColetaDados(self, event):
             pressaoSeguinte = self.pressaoAplicada.GetValue()
             pressaoSeguinte = format(pressaoSeguinte).replace(',','.')
@@ -213,7 +210,7 @@ class Coleta03(wx.Dialog):
                 menssagError.ShowModal()
                 menssagError.Destroy()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def NOVATREADING(self, id, cont, AlturaInicialCP, Tara, valor, tudopronto):
             #----------------------------------------------------------------------
             def worker(self, id, id_Estagio, AlturaInicialCP, Tara, valorI, tudopronto):
@@ -326,7 +323,7 @@ class Coleta03(wx.Dialog):
                 self.prompt.Remove(x-1,x+b)
                 return 0
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def Iniciar(self, event):
             Assentamento = self.Assentamento
             condicaoPorta = False
@@ -375,7 +372,7 @@ class Coleta03(wx.Dialog):
                     self.Bind(wx.EVT_BUTTON, self.ColetaDados, self.iniciar)
                     self.Update()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def updatePageFinalEstagio(self):
             '''Atualiza a página quando acabar a coleta de Dados'''
             id = self.id
@@ -402,7 +399,7 @@ class Coleta03(wx.Dialog):
             self.Fechar.Update()
             self.Update()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def Continuar(self, event):
             condicaoPorta = False
             porta = self.cboCPort.GetValue()
@@ -462,7 +459,7 @@ class Coleta03(wx.Dialog):
                     self.Bind(wx.EVT_BUTTON, self.ColetaDados, self.iniciar)
                     self.Update()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def textDinamic01(self, event):
             '''Ativar e desativar caixa de texto (Altura do corpo de Prova)'''
             a = self.massaAplicada.GetValue()
@@ -483,7 +480,7 @@ class Coleta03(wx.Dialog):
             except ValueError:
                 pass
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def textDinamic02(self, event):
             '''Ativar e desativar caixa de texto (Altura do corpo de Prova)'''
             a = self.pressaoAplicada.GetValue()
@@ -503,7 +500,7 @@ class Coleta03(wx.Dialog):
             except ValueError:
                 pass
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def Terminar(self, event):
             '''Para quando o usuario deseja-se terminar o Estagio de pressão'''
             dlg = wx.MessageDialog(None, 'Deseja terminar esse Estágio de Pressão?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
@@ -518,7 +515,7 @@ class Coleta03(wx.Dialog):
             else:
                 dlg.Destroy()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def dlg(self, event):
             '''Diálogo se deseja realmente sair'''
             dlg = wx.MessageDialog(None, 'Deseja mesmo finalizar o ensaio?', 'EAU', wx.YES_NO | wx .CENTRE| wx.NO_DEFAULT )
@@ -539,7 +536,7 @@ class Coleta03(wx.Dialog):
             else:
                 dlg.Destroy()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def testar(self):
             '''Testa a Conecção'''
             porta = self.cboCPort.GetValue()
@@ -572,7 +569,7 @@ class Coleta03(wx.Dialog):
                     self.Update()
                     return 0
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def onCheck(self, event):
             '''Atualiza os COM Port quando clica-se no ComboBox'''
             '''ComboBox Port Serial'''
@@ -587,7 +584,7 @@ class Coleta03(wx.Dialog):
                 self.Bind(wx.EVT_COMBOBOX_DROPDOWN, self.onCheck, self.cboCPort)
                 self.cboCPort.Update()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def update(self, event):
             cronometro = str(datetime.datetime.fromtimestamp(self.crono).strftime('%M:%S'))
             self.prompt.AppendText(cronometro)
@@ -602,11 +599,7 @@ class Coleta03(wx.Dialog):
                 self.timer.Stop()
                 self.AguardarTime()
 
-#----------------------------------------------------------------------
+    #--------------------------------------------------
         def onExit(self, event):
             '''Opcao Sair'''
             self.Close(True)
-
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################

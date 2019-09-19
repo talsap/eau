@@ -11,13 +11,9 @@ from capsulas import Cap
 from Editar import Editar
 from Csv import Csv
 
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################
 '''Classe da Lista editável'''
 class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
-
-    #----------------------------------------------------------------------
+    #--------------------------------------------------
         def __init__(self, parent, ID=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
             ULC.UltimateListCtrl.__init__(self, parent, ID, pos, size, agwStyle = ULC.ULC_REPORT | ULC.ULC_HAS_VARIABLE_ROW_HEIGHT | ULC.ULC_HRULES | ULC.ULC_VRULES | ULC.ULC_NO_HIGHLIGHT)
 
@@ -42,10 +38,8 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
                    buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
                    buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
                    self.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
-                   self.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
-                   self.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
-                   self.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
-                   self.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
+                   self.SetItemWindow(pos, col=5, wnd=buttonCSV, expand=True)
+                   self.SetItemWindow(pos, col=6, wnd=buttonDEL, expand=True)
                    self.SetItemData(index, key)
                    index += 1
 
@@ -57,8 +51,6 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
                self.SetColumnWidth(4, width=40)
                self.SetColumnWidth(5, width=40)
                self.SetColumnWidth(6, width=40)
-               self.SetColumnWidth(7, width=40)
-               self.SetColumnWidth(8, width=40)
             else:
                self.SetColumnWidth(0, width=125)
                self.SetColumnWidth(1, width=120)
@@ -67,14 +59,10 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
                self.SetColumnWidth(4, width=40)
                self.SetColumnWidth(5, width=40)
                self.SetColumnWidth(6, width=40)
-               self.SetColumnWidth(7, width=40)
-               self.SetColumnWidth(8, width=40)
 
-##################################################################################################################################
 '''Tela Inicial'''
 class Tela(wx.Frame):
-
-#---------------------------------------------------------------------------------------------------------------------------------
+    #------------------------------------------------------
      def __init__(self, *args, **kwargs):
          super(Tela, self).__init__(title = 'EAU - Beta', name = 'Facade', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION, *args, **kwargs)
          frame = self.basic_gui()
@@ -82,7 +70,7 @@ class Tela(wx.Frame):
      def basic_gui(self):
          self.panel = wx.Panel(self)
 
-         self.SetSize((700,500))
+         self.SetSize((620,500))
          self.Centre()
          self.Show()
 
@@ -100,7 +88,6 @@ class Tela(wx.Frame):
          novoEnsaioMenuItem = arquivoMenu.Append(wx.NewId(),'Novo Ensaio\tCtrl+N', 'Novo Ensaio')
          arquivoMenu.AppendSeparator()
          capsulasMeniItem = arquivoMenu.Append(wx.NewId(), 'Cápsulas Cadastradas', 'Cápsulas Cadastradas')
-         configuracoesMeniItem = arquivoMenu.Append(wx.NewId(), 'Configurações', 'Configurações')
          arquivoMenu.AppendSeparator()
          exitMenuItem = arquivoMenu.Append(wx.NewId(), 'Sair\tCtrl+S','Sair')
          ajudaMenuItem = ajudaMenu.Append(wx.NewId(),'Ajuda\tCtrl+A','Ajuda')
@@ -118,15 +105,13 @@ class Tela(wx.Frame):
          lista = bancodedados.ListaVisualizacao()
 
          '''Lista dos Ensaios'''
-         self.list_ctrl = EditableListCtrl(self.panel, size=(655,250), pos=(20,160) )
+         self.list_ctrl = EditableListCtrl(self.panel, size=(575,250), pos=(20,160) )
          if len(lista) >=8:
              self.list_ctrl.InsertColumn(0, 'IDENTIFICADOR', wx.LIST_FORMAT_CENTRE, width=115)
              self.list_ctrl.InsertColumn(1, 'INICIO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=115)
              self.list_ctrl.InsertColumn(2, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=135)
              self.list_ctrl.InsertColumn(3, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=70)
              self.list_ctrl.InsertColumn(4, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
-             self.list_ctrl.InsertColumn(5, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
-             self.list_ctrl.InsertColumn(6, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
              self.list_ctrl.InsertColumn(7, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
              self.list_ctrl.InsertColumn(8, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
          else:
@@ -135,8 +120,6 @@ class Tela(wx.Frame):
              self.list_ctrl.InsertColumn(2, 'TERMINO DO ENSAIO', wx.LIST_FORMAT_CENTRE, width=135)
              self.list_ctrl.InsertColumn(3, 'ESTAGIOS', wx.LIST_FORMAT_CENTRE, width=70)
              self.list_ctrl.InsertColumn(4, 'EDT', wx.LIST_FORMAT_CENTRE, width=40)
-             self.list_ctrl.InsertColumn(5, 'GRF', wx.LIST_FORMAT_CENTRE, width=40)
-             self.list_ctrl.InsertColumn(6, 'PDF', wx.LIST_FORMAT_CENTRE, width=40)
              self.list_ctrl.InsertColumn(7, 'CSV', wx.LIST_FORMAT_CENTRE, width=40)
              self.list_ctrl.InsertColumn(8, 'DEL', wx.LIST_FORMAT_CENTRE, width=40)
 
@@ -158,13 +141,9 @@ class Tela(wx.Frame):
              buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
              buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
              self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonCSV, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonDEL, expand=True)
              self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
-             self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
-             self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
              self.Bind(wx.EVT_BUTTON, self.exportCSV, buttonCSV)
              self.Bind(wx.EVT_BUTTON, self.Deletar, buttonDEL)
              self.list_ctrl.SetItemData(index, key)
@@ -178,35 +157,20 @@ class Tela(wx.Frame):
          self.vBox.Add(self.list_ctrl, 1, wx.ALL | wx.EXPAND, 20)
          self.SetSizer(self.vBox)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def Editar(self, event):
          id = event.GetId()
          dialogo = Editar(id)
          resultado = dialogo.ShowModal()
          self.list_ctrl.UpdateListCtrl()
 
-#---------------------------------------------------------------------------------------------------------------------------------
-     def Graficos(self, event):
-         id = event.GetId()
-         id = id - 4000
-         print(id)
-         print('Graficos')
-
-#---------------------------------------------------------------------------------------------------------------------------------
-     def exportPDF(self, event):
-         id = event.GetId()
-         id = id - 10000
-         print(id)
-         print('PDF')
-
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def exportCSV(self, event):
          id = event.GetId()
          id = id - 15000
          dialogo = Csv(id)
-         '''resultado = dialogo.Show()'''
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def Deletar(self, event):
          id = event.GetId()
          id = id - 20000
@@ -239,13 +203,9 @@ class Tela(wx.Frame):
                     buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
                     buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
                     self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
-                    self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
-                    self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
-                    self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
-                    self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
+                    self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonCSV, expand=True)
+                    self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonDEL, expand=True)
                     self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
-                    self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
-                    self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
                     self.Bind(wx.EVT_BUTTON, self.exportCSV, buttonCSV)
                     self.Bind(wx.EVT_BUTTON, self.Deletar, buttonDEL)
                     self.list_ctrl.SetItemData(index, key)
@@ -259,8 +219,6 @@ class Tela(wx.Frame):
                 self.list_ctrl.SetColumnWidth(4, width=40)
                 self.list_ctrl.SetColumnWidth(5, width=40)
                 self.list_ctrl.SetColumnWidth(6, width=40)
-                self.list_ctrl.SetColumnWidth(7, width=40)
-                self.list_ctrl.SetColumnWidth(8, width=40)
              else:
                 self.list_ctrl.SetColumnWidth(0, width=125)
                 self.list_ctrl.SetColumnWidth(1, width=120)
@@ -269,14 +227,10 @@ class Tela(wx.Frame):
                 self.list_ctrl.SetColumnWidth(4, width=40)
                 self.list_ctrl.SetColumnWidth(5, width=40)
                 self.list_ctrl.SetColumnWidth(6, width=40)
-                self.list_ctrl.SetColumnWidth(7, width=40)
-                self.list_ctrl.SetColumnWidth(8, width=40)
-
          else:
              dlg.Destroy()
 
-
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def NovoEnsaio(self, event):
          quant = bancodedados.quant_ensaios_deletados()
          valor_Logico = bancodedados.ler_quant_ensaios() - 1 - quant
@@ -309,13 +263,9 @@ class Tela(wx.Frame):
              buttonCSV.SetBitmap(wx.Bitmap('icons\icons-exportar-csv-24px.png'))
              buttonDEL.SetBitmap(wx.Bitmap('icons\icons-lixo-24px.png'))
              self.list_ctrl.SetItemWindow(pos, col=4, wnd=buttonEDT, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonGRF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonPDF, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=7, wnd=buttonCSV, expand=True)
-             self.list_ctrl.SetItemWindow(pos, col=8, wnd=buttonDEL, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=5, wnd=buttonCSV, expand=True)
+             self.list_ctrl.SetItemWindow(pos, col=6, wnd=buttonDEL, expand=True)
              self.Bind(wx.EVT_BUTTON, self.Editar, buttonEDT)
-             self.Bind(wx.EVT_BUTTON, self.Graficos, buttonGRF)
-             self.Bind(wx.EVT_BUTTON, self.exportPDF, buttonPDF)
              self.Bind(wx.EVT_BUTTON, self.exportCSV, buttonCSV)
              self.Bind(wx.EVT_BUTTON, self.Deletar, buttonDEL)
              self.list_ctrl.SetItemData(index, key)
@@ -331,8 +281,6 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
          else:
             self.list_ctrl.SetColumnWidth(0, width=125)
             self.list_ctrl.SetColumnWidth(1, width=120)
@@ -341,17 +289,14 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
 
-
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def CapCadastradas(self, event):
          '''Abri tela com as Capsulas Cadastradas no bancodedados'''
          frame = Cap()
          resultado = frame.ShowModal()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def ajudaGUI(self, event):
           '''Dialogo ajuda'''
           message1 = ('Software EAU - Ensaio de Adensamento Unidimensional\n\n')
@@ -361,7 +306,7 @@ class Tela(wx.Frame):
           dlg.ShowModal()
           dlg.Destroy()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def ColumAdapter(self, event):
          lista = bancodedados.ListaVisualizacao()
          '''Ajusta os tamanhos das colunas ao arrastar'''
@@ -373,8 +318,6 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
          else:
             self.list_ctrl.SetColumnWidth(0, width=125)
             self.list_ctrl.SetColumnWidth(1, width=120)
@@ -383,10 +326,8 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def ColumAdapter2(self, event):
          lista = bancodedados.ListaVisualizacao()
          '''Ajusta os tamanhos das colunas ao clicar com botão esquerdo sobre a coluna'''
@@ -398,8 +339,6 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
          else:
             self.list_ctrl.SetColumnWidth(0, width=125)
             self.list_ctrl.SetColumnWidth(1, width=120)
@@ -408,10 +347,8 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def ColumAdapter3(self, event):
          lista = bancodedados.ListaVisualizacao()
          '''Ajusta os tamanhos das colunas ao clicar com o botão direito sobre a coluna'''
@@ -423,8 +360,6 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
          else:
             self.list_ctrl.SetColumnWidth(0, width=125)
             self.list_ctrl.SetColumnWidth(1, width=120)
@@ -433,14 +368,8 @@ class Tela(wx.Frame):
             self.list_ctrl.SetColumnWidth(4, width=40)
             self.list_ctrl.SetColumnWidth(5, width=40)
             self.list_ctrl.SetColumnWidth(6, width=40)
-            self.list_ctrl.SetColumnWidth(7, width=40)
-            self.list_ctrl.SetColumnWidth(8, width=40)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
      def onExit(self, event):
           '''Opcao Sair'''
           self.Close(True)
-
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################

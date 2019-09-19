@@ -50,6 +50,33 @@ def UpdateDadosEnsaio(id, tipoA, diametro, alturaA, massaA, massaC, altCP, massa
     c.execute("UPDATE umidadeInicial SET massaUmida03 = ? WHERE id = ?", (mu3, id,))
     connection.commit()
 
+'''Retorna uma lista com os dados iniciais do ensaio para criar o CSV'''
+def ListaDadosInicias(id):
+    lista = []
+    for row in c.execute('SELECT * FROM dadosIniciais WHERE id = ?', (id,)):
+        lista.append(row[1])
+        lista.append(row[2])
+        lista.append(row[3])
+        lista.append(row[4])
+        lista.append(row[5])
+        lista.append(row[6])
+        lista.append(row[7])
+        lista.append(row[8])
+        lista.append(row[9])
+        lista.append(row[10])
+        lista.append(row[11])
+        lista.append(row[12])
+        lista.append(row[13])
+
+    return lista
+
+'''Retorna com a Data Final do ensaio para criar o CSV'''
+def DataFinalDoEnsaio(id):
+    lista = []
+    for row in c.execute('SELECT * FROM datafinalDoEnsaio WHERE id = ?', (id,)):
+        lista.append(row[1])
+
+    return lista[0]
 
 '''Cria uma Lista com todos os Status de cada Estágio'''
 def ListStatursEstagio(id):
@@ -261,7 +288,7 @@ def Pressao(id, id_Estagio):
 
     return a
 
-'''Retorna uma lista com os dados coletados que podem ser editados'''
+'''Retorna uma lista com os dados coletados'''
 def TabelaEstagio(id, id_Estagio):
     lista = []
     tempos = []
@@ -290,7 +317,7 @@ def ComboEstagios(id):
         row = int(row)
 
     while i < row:
-        lista.append('Estágio '+str(i+1))
+        lista.append('Estagio '+str(i+1))
         i = i+1
 
     return lista
@@ -793,7 +820,6 @@ def data_entry_umidade(cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01,
     c.execute("INSERT INTO umidadeInicial (id, cap01, cap02, cap03, massaSeca01, massaSeca02, massaSeca03, massaUmida01, massaUmida02, massaUmida03) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (id, cap01, cap02, cap03, mSeca01, mSeca02, mSeca03, mUmida01, mUmida02, mUmida03))
     connection.commit()
 
-
 '''Deleta uma Cápsula no banco de dados de acordo com o id'''
 def deleteCap(id):
     c.execute("DELETE FROM capsulas WHERE id = ?", (id,))
@@ -806,6 +832,9 @@ def delete(id):
     c.execute("DELETE FROM umidadeInicial WHERE id = ?", (id,))
     c.execute("DELETE FROM pressaoAplicada WHERE id = ?", (id,))
     c.execute("DELETE FROM coletaDados WHERE id = ?", (id,))
+    c.execute("DELETE FROM dateEstagio WHERE id = ?", (id,))
+    c.execute("DELETE FROM ensaioTara WHERE id = ?", (id,))
+    c.execute("DELETE FROM pressaoAssentamento WHERE id = ?", (id,))
     c.execute("INSERT INTO idDeletados (idDeletados) VALUES (?)", (id,))
     connection.commit()
 
@@ -843,5 +872,3 @@ def updateAdadosDEL(id, id_Estagio):
 def updateAdadosPressao(id, id_Estagio, pressao):
     c.execute("UPDATE pressaoAplicada SET pressao_aplicada = ? WHERE id = ? and id_Estagio = ?", (pressao, id, id_Estagio))
     connection.commit()
-
-################################################################################################################################################

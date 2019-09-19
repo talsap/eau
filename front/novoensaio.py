@@ -7,14 +7,10 @@ from cadastrarcapsula import cadCapsula
 from coleta import Coleta
 import bancodedados
 
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################
-
 '''Tela Novo Ensaio'''
 class TelaNovoEnsaio(wx.Dialog):
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def __init__(self, date, local, operador, profundidade, IDE_E, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Novo Ensaio', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION)
 
@@ -89,7 +85,7 @@ class TelaNovoEnsaio(wx.Dialog):
             self.continuar = wx.Button(self.panel, -1, 'Continuar', (20, 530), (450,-1), wx.ALIGN_LEFT)
             self.Bind(wx.EVT_BUTTON, self.Prosseguir, self.continuar)
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def CadastrarCapsula(self, event):
             dialogo = cadCapsula()
             resultado = dialogo.ShowModal()
@@ -102,7 +98,7 @@ class TelaNovoEnsaio(wx.Dialog):
             self.capsulaComboBox03 = wx.ComboBox(self.panel, -1, '', (400,425), (70, -1), self.capCadastradas)
             self.Refresh()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def Prosseguir(self, event):
             a = self.tipoAnel.GetValue()
             b1 = self.diamtroInterno01.GetValue()
@@ -138,7 +134,7 @@ class TelaNovoEnsaio(wx.Dialog):
             '''Conecção com o banco, lendo capsula'''
             self.capCadastradas = bancodedados.ler_cap()
 
-        #---------------------------------------------------------------
+    #--------------------------------------------------
             if self.check.GetValue() == True:
                 p = self.alturaCorpoProva.GetValue()
                 p = format(p).replace(',','.')
@@ -167,7 +163,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 else:
                     p = -1
 
-        #---------------------------------------------------------------
+    #--------------------------------------------------
             if self.adicionar.GetValue() == 'Adicionar agora':
                 x = 0
                 f = self.massaEspeciciaGraosSolo.GetValue()
@@ -185,7 +181,7 @@ class TelaNovoEnsaio(wx.Dialog):
             if self.adicionar.GetValue() == 'Adicionar depois':
                 x = 1
 
-        #---------------------------------------------------------------
+    #--------------------------------------------------
             if self.adicionarMS.GetValue() == 'Adicionar agora':
                 '''O y Corresponde aos status de que oa massa seca ja foi preenchida'''
                 y = 0
@@ -212,7 +208,7 @@ class TelaNovoEnsaio(wx.Dialog):
             if self.adicionarMS.GetValue() == 'Adicionar depois':
                 '''O y Corresponde aos status de que oa massa seca ja foi preenchida'''
                 y = 1
-        #---------------------------------------------------------------
+    #--------------------------------------------------
             try:
                 b1 = float(b1)
                 b2 = float(b2)
@@ -235,7 +231,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 menssagError.Destroy()
                 b1 = -1
 
-        #---------------------------------------------------------------
+    #--------------------------------------------------
             if  a == 'Anel fixo' or  a == 'Anel flutuante':
                 if b1>0 and b2>0 and b3>0 and c1>0 and c2>0 and c3>0 and d>0 and e>0 and j>0 and k>0 and l>0 and p>0:
                     if b1!= '' and b2!= '' and b3!= '' and c1!= '' and c2!= '' and c3!= '' and d!= '' and e!= '' and g!= '' and h!= '' and i!= '' and  j!= '' and k!= '' and l!= ''  and p!= '':
@@ -331,7 +327,7 @@ class TelaNovoEnsaio(wx.Dialog):
             else:
                 print('Veja se voce prencheu o tipo de de anel')
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def onCheck(self, event):
             '''Ativar e desativar caixa de texto (Altura do corpo de Prova)'''
             if  self.check.GetValue() == False:
@@ -347,7 +343,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 self.text09.SetForegroundColour((0,0,0))
                 self.Refresh()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def addDadosDepois(self, event):
             '''Ativar e desativar caixa de texto (Massa específica dos grãos de solo (g/cm³))'''
             if  self.adicionar.GetValue() == 'Adicionar depois':
@@ -363,7 +359,7 @@ class TelaNovoEnsaio(wx.Dialog):
                 self.text10.SetForegroundColour((0,0,0))
                 self.Refresh()
 
-#---------------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------
         def addDadosDepoisMS(self, event):
             '''Ativar e desativar caixa de texto (Massa específica dos grãos de solo (g/cm³))'''
             if  self.adicionarMS.GetValue() == 'Adicionar depois':
@@ -386,7 +382,3 @@ class TelaNovoEnsaio(wx.Dialog):
                 self.massaSeca03 = wx.TextCtrl(self.panel, -1, '', (400,485), (70, -1), wx.TE_RIGHT)
                 self.text17.SetForegroundColour((0,0,0))
                 self.Refresh()
-
-##################################################################################################################################
-##################################################################################################################################
-##################################################################################################################################
