@@ -9,7 +9,7 @@ import bancodedados
 import datetime
 import wx.lib.mixins.listctrl  as  listmix
 from coleta02 import Coleta02
-from coleta03 import Coleta03
+from messageColetaStatus import ColetaStatus
 
 '''Classe da Lista editável'''
 class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
@@ -526,7 +526,8 @@ class Page02(wx.Panel):
     #--------------------------------------------------
      def Coleta(self, event):
          id = self.id
-         con = Coleta03(id)
+         id_Estagio = bancodedados.idEstagioStatusIncompleto(id)
+         con = ColetaStatus(id, id_Estagio)
          resultado = con.Show()
          self.GetTopLevelParent().Close(True)
 

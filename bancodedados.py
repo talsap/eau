@@ -70,6 +70,14 @@ def ListaDadosInicias(id):
 
     return lista
 
+'''Retorna com o id_Estágio que esta com status de Incompleto'''
+def idEstagioStatusIncompleto(id):
+    lista = []
+    for row in c.execute('SELECT * FROM pressaoAplicada WHERE id = ? and status_estagio = ?', (id,1,)):
+        lista.append(row[1])
+
+    return lista[0]
+
 '''Retorna com a Data Final do ensaio para criar o CSV'''
 def DataFinalDoEnsaio(id):
     lista = []
@@ -301,6 +309,25 @@ def TabelaEstagio(id, id_Estagio):
     id = len(tempos) - 1
     while cont <= id:
         lista.append([tempos[cont]] + [alturas[cont]])
+        cont = cont + 1
+
+    return lista
+
+'''Retorna uma lista com os dados coletados para montar CSV'''
+def TabelaEstagioCSV(id, id_Estagio):
+    lista = []
+    tempos = []
+    raiztempo = []
+    alturas = []
+    cont = 0
+    for rows in c.execute('SELECT * FROM coletaDados WHERE id = ? and id_Estagio = ?', (id, id_Estagio,)):
+        tempos.append(rows[2])
+        raiztempo.append(rows[3])
+        alturas.append(rows[4])
+
+    id = len(tempos) - 1
+    while cont <= id:
+        lista.append([tempos[cont]] + [raiztempo[cont]] + [alturas[cont]])
         cont = cont + 1
 
     return lista

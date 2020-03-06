@@ -24,10 +24,11 @@ pi = math.pi
 '''Tela Coleta03. Responsavel de Coletar Dados Para Status Estágio Incompleto. Iniciado na tela Editar'''
 class Coleta03(wx.Dialog):
     #--------------------------------------------------
-        def __init__(self, id, *args, **kwargs):
+        def __init__(self, id, id_Estagio, *args, **kwargs):
             wx.Dialog.__init__(self, None, -1, 'EAU - Coleta de Dados', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX)
             '''y corresponde sobre o status do preenchimento da massa seca'''
             self.id = id
+            self.id_Estagio = id_Estagio
             self.condicaoConeccao = False
 
             self.panel = wx.Panel(self)
@@ -45,7 +46,7 @@ class Coleta03(wx.Dialog):
                 self.Bind(wx.EVT_COMBOBOX_DROPDOWN, self.onCheck, self.cboCPort)
 
             self.text00 = wx.StaticText(self.panel, -1, "COM Port", (350,44), (60,-1), wx.ALIGN_LEFT)
-            self.numEstagios = '1'
+            self.numEstagios = str(self.id_Estagio)
             self.FontTitle = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL)
             self.title = wx.StaticText(self.panel, -1, 'Estágio ' + self.numEstagios, (20,20), (460,-1), wx.ALIGN_CENTER)
             self.title.SetFont(self.FontTitle)
