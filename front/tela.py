@@ -64,11 +64,14 @@ class EditableListCtrl(ULC.UltimateListCtrl, listmix.ListCtrlAutoWidthMixin):
 class Tela(wx.Frame):
     #------------------------------------------------------
      def __init__(self, *args, **kwargs):
-         super(Tela, self).__init__(title = 'EAU - Beta', name = 'Facade', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION, *args, **kwargs)
+         super(Tela, self).__init__(title = 'EAU - v1.0', name = 'Facade', style = wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CLOSE_BOX | wx.CAPTION, *args, **kwargs)
          frame = self.basic_gui()
 
      def basic_gui(self):
          self.panel = wx.Panel(self)
+
+         ico = wx.Icon('icons\logo.ico', wx.BITMAP_TYPE_ICO)
+         self.SetIcon(ico)
 
          self.SetSize((620,500))
          self.Centre()
@@ -98,8 +101,8 @@ class Tela(wx.Frame):
          self.SetMenuBar(menuBar)
 
          '''Botao Novo Ensaio'''
-         self.button = wx.Button(self.panel, -1, '', (326, 60), (48,48))
-         self.button.SetBitmap(wx.Bitmap('icons\icons-adicionar-48px.png'))
+         self.button = wx.Button(self.panel, -1, '', (286, 60), (48,48))
+         self.button.SetBitmap(wx.Image('icons\icons-adicionar-48px.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
          self.Bind(wx.EVT_BUTTON, self.NovoEnsaio, self.button)
 
          lista = bancodedados.ListaVisualizacao()
