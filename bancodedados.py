@@ -837,7 +837,8 @@ def dataEstagioInicio(id, id_Estagio):
 '''Adiciona os dados iniciais do ensaio no banco'''
 def data_entry_dados(tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade, IDE_E):
     datestamp = str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M:%S  %d/%m/%Y'))
-    dateColeta = str(datetime.datetime.strptime(str(dateColeta), '%m/%d/%y %H:%M:%S').strftime('%d-%m-%Y'))
+    print str(dateColeta)
+    dateColeta = str(datetime.datetime.strptime(str(dateColeta), '%d/%m/%Y %H:%M:%S').strftime('%d-%m-%Y'))
     c.execute("INSERT INTO dadosIniciais (id, datestamp, tipoAnel, diametro_anel, altura_anel, massa_anel, massa_conj, alt_corpo_prova, massa_espc, dateColeta, local, operador, profundidade, nome_Ensaio) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (datestamp, tipoAnel, d_anel, a_anel, m_anel, m_conj, alt_cprova, m_esp, dateColeta, local, operador, profundidade, IDE_E))
     connection.commit()
 
