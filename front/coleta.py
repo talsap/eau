@@ -219,7 +219,7 @@ class Coleta(wx.Dialog):
                         tudopronto = True
                         self.NOVATREADING(id, cont, AlturaInicialCP, Tara, valor, tudopronto)
                     except:
-                        elf.prompt.AppendText("erro1! O tempo de resposta do arduino com o software impede de coletar.\n")
+                        self.prompt.AppendText("erro1! O tempo de resposta do arduino com o software impede de coletar.\n")
                         #erro1. Entende-se que o software está recebedo um valor errado da porta serial, devido ao delay médio de +- 2.5 seg de resposta. Esse erro pode acontecer em computadres lentos.
 
             else:
